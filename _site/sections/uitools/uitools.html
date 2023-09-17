@@ -1,0 +1,220 @@
+
+<!-- My first attempt at making a website, don't hate me if it looks weird XD -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DCS Web Editor Manual</title>
+  <!--<link href="/assets/css/style.css" type="text/css" rel="stylesheet">-->
+  <link href="/assets/css/style.css" rel="stylesheet">
+  <!--<base href="https://ghostcarousal.github.io/dcs-web-editor-user-manual/">-->
+</head>
+
+<body>
+  <!-- Main panel contains left nav-box and center content-box. -->
+  <div class="left-panel">
+    <header class="header">
+      <h1>DCS Web Editor User Manual</h1>
+    </header>
+    <nav class="nav">
+      <ul class="top-level">
+        <!-- Home -->
+        <li>
+          <a href="/">Home</a>
+        </li>
+        <!-- UI Utilities -->
+        <li>
+          <a href="/sections/uitools/uitools.html">UI Tools</a>
+          <ul class="cat1">
+            <li>
+              <a href="/sections/uitools/uitools.html#keyboard-shortcuts">Keyboard Shortcuts</a>
+            </li>
+            <li>
+              <a href="/sections/uitools/uitools.html#map-tools">Map Tools</a>
+            </li>
+            <li>
+              <a href="/sections/uitools/uitools.html#panel-tools">Panel Tools</a>
+            </li>  
+          </ul>
+        </li>
+        <!-- Mission -->
+        <li>
+          <a href="/sections/mission/mission.html">Mission</a>
+        </li>
+        <!-- Map Options -->
+        <li>
+          <a href="/sections/mapoptions/mapoptions.html">Map Options</a>
+        </li>
+        <!-- Units -->
+        <li>
+          <a href="/sections/units/units.html">Units</a>
+          <ul class="cat1">
+            <li>
+              <a href="/sections/units/units.html#unit-panel">Unit Panel</a>
+            </li>
+            <li>
+              <a href="/sections/units/units.html#unit-manipulation">Unit Manipulation</a>                  
+            </li>
+          </ul>
+        </li>
+        <!-- Waypoints -->
+        <li>
+          <a href="/sections/waypoints/waypoints.html">Waypoints</a>
+          <ul class="cat1">
+            <li>
+              <a href="/sections/waypoints/waypoints.html#waypoint-panel">Waypoint Panel</a>
+            </li>
+            <li>
+              <a href="/sections/waypoints/waypoints.html#waypoint-manipulation">Waypoint Manipulation</a>
+            </li>
+          </ul>
+        </li>
+        <!-- Statics -->
+        <li>
+          <a href="/sections/statics/statics.html">Statics</a>
+        </li>
+        <!-- Triggers & Zones -->
+        <li>
+          <a href="/sections/triggers/triggers.html">Triggers & Zones</a>
+        </li>
+        <!-- Drawings -->
+        <li>
+          <a href="/sections/drawings/drawings.html">Drawings</a>
+        </li>
+        <!-- Templates -->
+        <li>
+          <a href="/sections/templates/templates.html">Templates</a>
+        </li>
+        <!-- Collaborate -->
+        <li>
+          <a href="/sections/collaborate/collaborate.html">Collaborate</a>
+        </li>
+        <!-- Plugins -->
+        <li>
+          <a href="/sections/plugins/plugins.html">Plugins</a>
+        </li>
+      </ul>
+    </nav>
+    <nav class="footer">
+      <a href="https://discord.gg/p8ey5sguY2">Discord</a>
+      <a href="#">GitHub</a>
+    </nav>
+  </div>
+  <main class="content">
+    <h1 id="ui-tools">UI Tools</h1>
+
+<p><strong>Work in progress. All content within is subject to change.</strong></p>
+
+<h3 id="mouse-navigation">Mouse Navigation</h3>
+
+<p>Left-click and drag to move around the map.</p>
+
+<p>Click on points of interest, such as airports, to open information windows.</p>
+
+<p>Right-click anywhere on the map to open a coordinate window where you can click on your preferred coordinate type to copy it to clipboard. Also contained within this window is a ‘Paste here’ button, which you can use to paste any units or other entities currently contained within your clipboard.</p>
+
+<p>The ‘GoogleMaps’ and ‘SkyVector’ buttons will take you to the respective mapping and flight planning websites.</p>
+
+<h3 id="keyboard-shortcuts">Keyboard Shortcuts</h3>
+
+<ul>
+  <li>Shift + Left-Click + drag -&gt; box-select units, triggers, waypoints, drawings etc</li>
+  <li>Delete -&gt; delete selected units, triggers, waypoints</li>
+  <li>Escape -&gt; deselect all</li>
+  <li>Right-Click -&gt; deselect all, open mouse location info / coordinates</li>
+  <li>Paint mode + Left Click + MouseMove -&gt; Draw lines. Left-Cick to delete lines</li>
+  <li>Paint mode + Left Click + CTRL + MouseMove -&gt; Draw dotted lines.</li>
+  <li>Ctrl + S -&gt; save mission</li>
+  <li>Ctrl + Shift + S -&gt; QuickSave mission ( no prompt )</li>
+  <li>Ctrl + C -&gt; copy selected units, triggers</li>
+  <li>Ctrl + V -&gt; paste selected units, triggers</li>
+  <li>Ctrl + L -&gt; load mission</li>
+  <li>Ctrl + Z -&gt; undo ( up to 20 steps )</li>
+  <li>Shift + R -&gt; Random rotation of selected units</li>
+  <li>Shift + Alt + R -&gt; Align selected units rotation to 0°</li>
+  <li>Shift + L -&gt; Align selected units to line ( uses paste x/y offset )</li>
+  <li>Shift + P -&gt; Randomize position of selected units ( uses paste x/y offset )</li>
+  <li>Shift + G -&gt; Align selected units to grid ( uses paste x/y offset )</li>
+  <li>Shift + T -&gt; Transform / scale / rotate selected units. Press ESCAPE to exit transform mode.</li>
+  <li>If the fonts are too large/small, you can also use the browser zoom Ctrl +  and Ctrl -</li>
+</ul>
+
+<h2 id="map-tools">Map Tools</h2>
+
+<p>Map Tiles:</p>
+
+<p><img src="./images/MapTiles.png" alt="MapTiles" /></p>
+
+<p>This button opens a menu where you are able to choose your desired map tile type, as well as map options to customize your experience.</p>
+
+<p>Marker Color:</p>
+
+<p><img src="./images/Marker.png" alt="Marker" /></p>
+
+<p>Use this button to reveal the marker color palatte. Choose your color and then left-click anywhere on the map to close the window.</p>
+
+<p>The bottom left of the map screen consists of six blocks of information.
+There’s the location block:</p>
+
+<p><img src="./images/Coordinates.png" alt="Coordinates" /></p>
+
+<p>The map zoom and scale bars:</p>
+
+<p><img src="./images/Zoom.png" alt="Zoom" /></p>
+
+<p><img src="./images/Scale.png" alt="Scale" /></p>
+
+<p>The Drawing tool:</p>
+
+<p><img src="./images/Draw.png" alt="Draw" /></p>
+
+<p>When selected, this tool allows for drawing on the map with a marker using your mouse. Color is selected via the Marker Color tool as shown above. Click on any mark to erase it.</p>
+
+<p>The Text tool:</p>
+
+<p><img src="./images/Text.png" alt="Text" /></p>
+
+<p>Enable this tool and click anywhere on the map to insert text. Text color is chosen via the Marker Color tool.</p>
+
+<p>And finally the Polyline Measurement tool:</p>
+
+<p><img src="./images/Poly.png" alt="Poly" /></p>
+
+<p>To use this tool, click on the top arrow button to highlight and activate it. Click anywhere on the map to begin your measurement sequence. You may create as many sequence legs as you desire.<br />
+You will notice an information box accompanying each point:</p>
+
+<p><img src="./images/WaypointInfo.png" alt="WaypointInfo" /></p>
+
+<p>The top number represents the incoming leg azimuth, while the second number represents the outgoing leg azimuth.
+The grey number is the current leg length, and the green number is the total length of the sequence.</p>
+
+<p>To erase all measurement sequences, press the ‘x’ on the Polyline Measurement tool.</p>
+
+<p>To change the measurement units, click the bottom and final button of the tool. This will cycle between nm (nautical miles), km (kilometers), and mi (miles).</p>
+
+<h2 id="panel-tools">Panel Tools</h2>
+
+<p>These tools are found at the bottom of the Editor Main Panel.</p>
+
+<h3 id="offset">Offset</h3>
+
+<p>The Offset Panel:<br />
+<img src="./images/Offset.png" alt="Offset" /></p>
+
+<p>This panel contains two fields to input numbers according to your desired paste offset ranges. Insert negative values for left/down.</p>
+
+<p>Undo:</p>
+
+<p><img src="./images/Undo.png" alt="Undo" /></p>
+
+<p>This button has the same function as the keyboard shortcut. Sequentially undo previous edits.</p>
+
+<p><img src="./images/Undo2.png" alt="Undo2" /></p>
+
+<p>The tool will also display the action to be undone, as well as how many edits are in memory.</p>
+
+  </main>
+</body>
+</html>

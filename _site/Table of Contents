@@ -1,0 +1,93 @@
+Home
+  Welcome
+  Getting Started
+    Finding the DCSWE
+
+User Interface
+  Overview
+  Navigation
+    Map
+    Editor Interface
+  Editor Interface Overview
+    Mission Panel
+    Map Options
+    Units
+    Statics
+    Triggers & Zones
+    Drawings
+    Templates
+    Collaborate
+    Plugins
+    Help
+    Offset
+
+Mission
+  Overview
+  Create
+  Load
+  Save
+  Transfer Theatre
+  FileEditor
+  Export mission.json
+
+
+Map Options
+  Overview
+  Map Options
+  Briefing
+    Add Images
+    Briefing Template
+  Coalitions
+    Create Preset
+  Weather
+
+Units
+  Overview
+    Unit List
+    Coalition
+  Unit Manipulation
+    Place
+    Select/Deselect
+    Move
+    Transform (Keyboard Shortcuts)
+    Delete
+  Unit Panel
+    Overview
+    Settings
+    Loadout
+    Waypoints
+    Visibility
+    Coordinates
+    Variations (between unit types)
+  Waypoints
+    Panel
+      Overview
+      Data
+      Coordinates
+    Add
+    Select/Deselect
+    Move
+    Delete
+
+Statics
+  Overview
+  Static Manipulation
+    See Units
+  Static Panel
+    Settings
+    Visibility
+    Coordinates
+
+Drawings
+
+Templates
+  Import/Export
+  Create Template
+    Category
+    Add Template
+    Update
+    Delete
+  Add Units From Template
+
+Collaboration
+

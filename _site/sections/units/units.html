@@ -1,0 +1,260 @@
+
+<!-- My first attempt at making a website, don't hate me if it looks weird XD -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DCS Web Editor Manual</title>
+  <!--<link href="/assets/css/style.css" type="text/css" rel="stylesheet">-->
+  <link href="/assets/css/style.css" rel="stylesheet">
+  <!--<base href="https://ghostcarousal.github.io/dcs-web-editor-user-manual/">-->
+</head>
+
+<body>
+  <!-- Main panel contains left nav-box and center content-box. -->
+  <div class="left-panel">
+    <header class="header">
+      <h1>DCS Web Editor User Manual</h1>
+    </header>
+    <nav class="nav">
+      <ul class="top-level">
+        <!-- Home -->
+        <li>
+          <a href="/">Home</a>
+        </li>
+        <!-- UI Utilities -->
+        <li>
+          <a href="/sections/uitools/uitools.html">UI Tools</a>
+          <ul class="cat1">
+            <li>
+              <a href="/sections/uitools/uitools.html#keyboard-shortcuts">Keyboard Shortcuts</a>
+            </li>
+            <li>
+              <a href="/sections/uitools/uitools.html#map-tools">Map Tools</a>
+            </li>
+            <li>
+              <a href="/sections/uitools/uitools.html#panel-tools">Panel Tools</a>
+            </li>  
+          </ul>
+        </li>
+        <!-- Mission -->
+        <li>
+          <a href="/sections/mission/mission.html">Mission</a>
+        </li>
+        <!-- Map Options -->
+        <li>
+          <a href="/sections/mapoptions/mapoptions.html">Map Options</a>
+        </li>
+        <!-- Units -->
+        <li>
+          <a href="/sections/units/units.html">Units</a>
+          <ul class="cat1">
+            <li>
+              <a href="/sections/units/units.html#unit-panel">Unit Panel</a>
+            </li>
+            <li>
+              <a href="/sections/units/units.html#unit-manipulation">Unit Manipulation</a>                  
+            </li>
+          </ul>
+        </li>
+        <!-- Waypoints -->
+        <li>
+          <a href="/sections/waypoints/waypoints.html">Waypoints</a>
+          <ul class="cat1">
+            <li>
+              <a href="/sections/waypoints/waypoints.html#waypoint-panel">Waypoint Panel</a>
+            </li>
+            <li>
+              <a href="/sections/waypoints/waypoints.html#waypoint-manipulation">Waypoint Manipulation</a>
+            </li>
+          </ul>
+        </li>
+        <!-- Statics -->
+        <li>
+          <a href="/sections/statics/statics.html">Statics</a>
+        </li>
+        <!-- Triggers & Zones -->
+        <li>
+          <a href="/sections/triggers/triggers.html">Triggers & Zones</a>
+        </li>
+        <!-- Drawings -->
+        <li>
+          <a href="/sections/drawings/drawings.html">Drawings</a>
+        </li>
+        <!-- Templates -->
+        <li>
+          <a href="/sections/templates/templates.html">Templates</a>
+        </li>
+        <!-- Collaborate -->
+        <li>
+          <a href="/sections/collaborate/collaborate.html">Collaborate</a>
+        </li>
+        <!-- Plugins -->
+        <li>
+          <a href="/sections/plugins/plugins.html">Plugins</a>
+        </li>
+      </ul>
+    </nav>
+    <nav class="footer">
+      <a href="https://discord.gg/p8ey5sguY2">Discord</a>
+      <a href="#">GitHub</a>
+    </nav>
+  </div>
+  <main class="content">
+    <h1 id="units">Units</h1>
+
+<p><strong>Work in progress</strong></p>
+
+<p><img src="./images/Units.png" alt="Units" /></p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Select the ‘Unit List’ to display the following:</p>
+
+<p><img src="./images/UnitList.png" alt="UnitList" /></p>
+
+<p>At the top of the window you can filter via a search criteria. At the bottom right of the window are selectors for additional pages of units, as well as a display limit dropdown menu.</p>
+
+<p>Breaking down the main section:</p>
+<ul>
+  <li>Name displays the name of the unit.</li>
+  <li>ID is a unique number identifier of the unit.</li>
+  <li>Group is the name of the group the unit is assigned to, and gID is the group number identifier.</li>
+  <li>Callsign shows the identifier the unit will be using over radios in-game.</li>
+  <li>Task has a dropdown menu where you can select filters to display units by the task assigned to them.</li>
+  <li>Coalition filters and displays by red/blue coalition.</li>
+  <li>Country displays the country of the unit.</li>
+  <li>Type shows the vehicle type of the unit.</li>
+  <li>Skill shows the skill level assigned to the unit.</li>
+  <li>Hidden displays whether the unit is hidden/shown. You can also filter by these criteria.</li>
+</ul>
+
+<p>Select individual units via the selector boxes on the left-hand side. This will also select the units on the map.</p>
+
+<p>Following the Unit List are the Unit Selector Buttons. All of these buttons send you to the same place: the Units window:</p>
+
+<p><img src="./images/UnitsWindow.png" alt="UnitsWindow" /></p>
+
+<p>This window contains all of the placeable units of the editor. The very top contains a search field to search for specific units, as well as a coalition and country dropdown menu. In the top left are the unit type selector tabs. These mirror the unit selector buttons in the Unit category of the Editor Interface. Each named tab contains the units of the corresponding type.</p>
+
+<h2 id="unit-panel">Unit Panel</h2>
+
+<p><img src="./images/Panel.png" alt="Panel" /></p>
+
+<p>Not the unit type and faction at the top. Just below is the name and group of the unit, which can both be changed.</p>
+
+<p>Add unit will add a unit to this unit’s group.</p>
+
+<p>The heading tape sets the starting face direction of the unit.</p>
+
+<p>Each of the settings can be clicked to expand, as well as copied and pasted between groups.</p>
+
+<h3 id="group-settings">Group Settings</h3>
+
+<p><img src="./images/GroupSettings.png" alt="GroupSettings" /></p>
+
+<p>Cnd/Spwn sets unit condition (health) and spawn chance of the unit between 0 and 1. To set a 50/50 spawn chance, set 0.5.</p>
+
+<p>Task is selected via the dropdown menu. To the right of task is the hourglass Mission Start/Late Activation switch.</p>
+
+<p>Frequency and Modulate set the initial frequency settings for radio 1.</p>
+
+<p>To the right of frequency, set whether the unit’s radios are enabled.</p>
+
+<p>Auto-rename sets the name for all units in the group according to the Group name variable, or just for selected units, depending which option you choose. If, for example, you enter ‘Whiskey’ as your group name for a group of four and press the ‘Auto-rename units in group’ button, the units will be renamed to ‘Whiskey_1’ through ‘Whiskey_4.’</p>
+
+<h3 id="unit-settings">Unit Settings</h3>
+
+<p><img src="./images/UnitSettings.png" alt="UnitSettings" /></p>
+
+<p>Set the Skill, Tail Number, Livery, and Callsign of the unit.</p>
+
+<h3 id="radio-settings">Radio Settings</h3>
+
+<p><img src="./images/RadioSettings.png" alt="RadioSettings" /></p>
+
+<p>Change the radio channel frequencies for each radio. Note the frequency ranges at the top of the dropdown for easy reference.</p>
+
+<h3 id="loadout">Loadout</h3>
+
+<p><img src="./images/LoadoutSettings.png" alt="LoadoutSettings" /></p>
+
+<p>Select a Preset loadout from the dropdown menu.</p>
+
+<p>Set desired Chaff, Flare, Fuel, and Gun ammo quantities.</p>
+
+<p>If you wish to customize your loadout, press the ‘edit’ button to bring up the Payload Editor interface:</p>
+
+<p><img src="./images/Payload.png" alt="Payload" /></p>
+
+<p>From this menu, select a preset in the top-left dropdown if desired. Hover over each station to reveal payload options and select your desired armament. Note the weight of each weapon along the bottom. Click anywhere on the map to close the Payload Editor.</p>
+
+<h3 id="waypoints">Waypoints</h3>
+
+<p><img src="./images/Waypoints.png" alt="Waypoints" /></p>
+
+<p>This menu sets parameters for Waypoint 0 (start position) of the aircraft.</p>
+
+<h3 id="visibility">Visibility</h3>
+
+<p><img src="./images/Visibility.png" alt="Visibility" /></p>
+
+<p>‘Hidden’ hides the unit from the editor map, if hidden units are set to invisible.</p>
+
+<p>‘Hidden on Planner’ hides the unit from the briefing window at the start of a mission.</p>
+
+<p>‘Hidden on MFD’ hides the unit from any aircraft’s situational display, such as the F/A-18s SA page or the AH-64s TSD, etc.</p>
+
+<h3 id="coordinates">Coordinates</h3>
+
+<p><img src="./images/Coordinates.png" alt="Coordinates" /></p>
+
+<p>Displays and allows for easy copying of the unit’s coordinates.</p>
+
+<h2 id="unit-manipulation">Unit Manipulation</h2>
+<h3 id="place-units">Place Units</h3>
+
+<p>From any of the Units tabs in the Units window, click and drag a unit from the window onto the map to place.</p>
+
+<p>Copy and Paste any unit or group of units by selecting them via Shift + LClick + Drag, and then Ctrl + C to copy, Ctrl + V to paste. You can also paste units by right-clicking on the map and selecting ‘Paste Here’ from the coordinate window.</p>
+
+<h3 id="selectdeselect-units">Select/Deselect Units</h3>
+
+<p>Click on any unit to open it’s Unit Panel.</p>
+
+<p>Select units by Shift + LClick + Dragging the Select Box over the unit(s).</p>
+
+<p>Deselect units with Esc.</p>
+
+<h3 id="move-units">Move Units</h3>
+
+<p>Click and drag units to move them. Units do not need to be selected to move them with this method.</p>
+
+<p>Select multiple units with the Select Box and move them using the same method.</p>
+
+<h3 id="transform-units">Transform Units</h3>
+
+<p>Shift + R will rotate selected units in random directions.</p>
+
+<p>Shift + Alt + R rotates selected units to 0 degrees.</p>
+
+<p>Shift + L aligns selected units along a single axis, using Paste Offset parameters for spacing and direction.</p>
+
+<p>Shift + P randomizes the position of selected units using Paste Offset parameters.</p>
+
+<p>Shift + G aligns selected units to a grids, using Paste Offset parameters to build the grid spacing.</p>
+
+<p>Shift + T to transform, scale, and rotate selected units. Select units and then press Shift + T to show the Transformation Box. Clicking and dragging within the box will drag the units. Clicking and dragging edge tabs will scale the units along that axis. Clicking and dragging just outside a corner tab will allow for rotation of selected units. Press Esc or RClick anywhere to deselect the units and Transformation Box.</p>
+
+<h3 id="delete-units">Delete Units</h3>
+
+<p>Press Del to delete any selected units.</p>
+
+<p>To delete units through the Unit List, open the Unit List and select all units you wish to delete. Then close the Unit List by clicking on the interface Unit List button. Then press Del. Note that pressing Esc in the Unit List panel will NOT close the panel, but deselect all selected units instead.</p>
+
+
+  </main>
+</body>
+</html>

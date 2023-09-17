@@ -1,0 +1,2 @@
+
+- nav panel overflow ellipses
