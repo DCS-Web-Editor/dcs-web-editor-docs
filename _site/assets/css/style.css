@@ -10,7 +10,7 @@ html {
 
 body {
   font-family: Verdana;
-  background-color: rgb(29, 39, 49);
+  background-color: rgb(35, 49, 63);
   width: 100%;
   min-height: 100vh;
 }
@@ -20,13 +20,14 @@ body {
   width: 18em;
   display: grid;
   grid-template-rows: 6em 1fr 5em;
+  border-right: 1px solid rgba(255,255,255,0.82);
 }
 
 .header {
   width: 18em;
   height: 6em;
   text-align: center;
-  color: white;
+  color: rgba(255,255,255,0.82);
   padding: 1em;
 }
 
@@ -38,7 +39,7 @@ body {
   width: 18em;
   overflow-x: hidden;
   overflow-y: auto;
-  border: 1px solid white;
+  border: 1px solid rgba(255,255,255,0.82);
   border-left: 0px;
   border-right: 0px;
 }
@@ -53,7 +54,7 @@ body {
 .nav a {
   text-decoration: none;
   font-size: 1.2rem;
-  color: white;
+  color: rgba(255,255,255,0.82);
 }
 
 .footer {
@@ -66,13 +67,13 @@ body {
 
 .footer a {
   text-decoration: none;
-  color: white;
+  color: rgba(255,255,255,0.82);
   padding: 1em;
 }
 
 .footer a:hover {
-  background-color: white;
-  color: rgb(29, 39, 49);
+  background-color: rgba(255,255,255,0.82);
+  color: rgb(35, 49, 63);
   transition: 0.3s;
 }
 
@@ -84,8 +85,12 @@ body {
   bottom: 0;
   padding: 2em;
   overflow-y: scroll;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgb(47, 65, 82);
   line-height: 1.2;
+}
+
+.content a {
+  color: rgba(255,255,255,0.82);
 }
 
 .content img {
@@ -97,16 +102,19 @@ body {
 .content li {
   padding-left: 1em;
   margin-bottom: 1em;
+  color: rgba(255,255,255,0.82);
 }
 
 .content h1 {
   margin-bottom: 1em;
+  color: rgba(255,255,255,0.82);
 }
 
 .content h2,
 .content h3,
 .content h4 {
   margin-bottom: 0.5em;
+  color: rgba(255,255,255,0.82);
 }
 
 .content ul {
