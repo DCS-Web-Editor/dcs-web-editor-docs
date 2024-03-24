@@ -10,7 +10,7 @@ Github pages built using Jekyll for easy markdown content creation.
 
 You can run a localhost server with live reloading using Jekyll and Git Bash.
 
-Create a Fork of the repository.
+Create a fork or clone of the repository.
 
 ### Making changes
 
