@@ -1,0 +1,25 @@
+site_name: DCS Web Editor User Manual
+theme:
+  name: material
+  language: en
+  palette:
+    scheme: slate
+  features:
+    
+nav:
+  - Getting Started: index.md
+  - UI Tools: sections/uitools/uitools.md
+  - Mission: sections/mission/mission.md
+  - Map Options: sections/mapoptions/mapoptions.md
+  - Units: sections/units/units.md
+  - Waypoints: sections/waypoints/waypoints.md
+  - Statics: sections/statics/statics.md
+  - Triggers & Zones: sections/triggers/triggers.md
+  - Drawings: sections/drawings/drawings.md
+  - Templates: sections/templates/templates.md
+  - Collaborate: sections/collaborate/collaborate.md
+  - Plugins: sections/plugins/plugins.md
+
+
+extra_css:
+  - assets/css/extra.css
