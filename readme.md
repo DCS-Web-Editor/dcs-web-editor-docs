@@ -10,13 +10,13 @@ Github pages built using Jekyll for easy markdown content creation.
 
 You can run a localhost server with live reloading using Jekyll and Git Bash.
 
-Create a Fork of the repository.
+Create a fork or clone of the repository.
 
 ### Making changes
 
 Before you make any meaningful changes, navigate to `_layouts > default.html` and COMMENT OUT `<base href="https://dcs-web-editor.github.io/dcs-web-editor-docs/">`, if you don't do this the LOCAL SERVER WILL NOT WORK.
 
-Open a Git Bash terminal in the root of your repository folder and run `Jekyll serve --livereload`. Open the browser of your choice and navigate to `localhost:4000`.
+Open a Git Bash terminal in the root of your repository folder and run `jekyll serve --livereload`. Open the browser of your choice and navigate to `localhost:4000`.
 
 You should now be set up to edit to your heart's content.
 
@@ -28,7 +28,7 @@ The CSS file is in `assets > css > style.css`.
 
 The Sections folder contains the .md files, and every .md file contains the main content of the site. Modify the .md files (in [markdown](https://www.markdownguide.org/basic-syntax/) format) to change the content.
 
-If you add new sections, you'll need to link them in the _layouts > default.html in the same style as the existing relative urls.
+If you add new sections, you'll need to link them in the `_layouts > default.html` in the same style as the existing relative urls.
 
 ### Build
 
