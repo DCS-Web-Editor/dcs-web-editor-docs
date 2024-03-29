@@ -21,6 +21,7 @@ nav:
   - Templates: sections/templates/templates.md
   - Collaborate: sections/collaborate/collaborate.md
   - Plugins: sections/plugins/plugins.md
+  - 3D Editor: sections/3deditor/3deditor.md
   - FAQ: sections/faq/faq.md
 
 extra:
