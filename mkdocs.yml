@@ -4,6 +4,8 @@ theme:
   language: en
   palette:
     scheme: slate
+  logo: assets/images/logo.png
+  favicon: assets/images/fav.png
   features:
     
 nav:
@@ -19,6 +21,16 @@ nav:
   - Templates: sections/templates/templates.md
   - Collaborate: sections/collaborate/collaborate.md
   - Plugins: sections/plugins/plugins.md
+  - FAQ: sections/faq/faq.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/7G3qcmxmAX
+    - icon: fontawesome/brands/github
+      link: https://github.com/DCS-Web-Editor
+    - icon: fontawesome/brands/patreon
+      link: https://www.patreon.com/DcsWebEditor
 
 
 extra_css:

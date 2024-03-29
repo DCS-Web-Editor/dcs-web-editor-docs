@@ -33,6 +33,15 @@ The 'GoogleMaps' and 'SkyVector' buttons will take you to the respective mapping
 - Shift + T -> Transform / scale / rotate selected units. Press ESCAPE to exit transform mode.
 - If the fonts are too large/small, you can also use the browser zoom Ctrl +  and Ctrl -
 
+### 3D Editor Shortcuts
+
+- Ctrl -> Ground view while holding.
+- Alt -> Bird's Eye view while holding.
+- 1 -> Point camera North.
+- 2 -> Point camera East.
+- 3 -> Point camera South.
+- 4 -> Point camera West.
+
 ## Map Tools
 
 Map Tiles:  
@@ -62,7 +71,7 @@ The Drawing tool:
 
 ![Draw](./images/Draw.png)
 
-When selected, this tool allows for drawing on the map with a marker using your mouse. Color is selected via the Marker Color tool as shown above. Click on any mark to erase it.
+When selected, this tool allows for drawing on the map with a marker using your mouse. Color is selected via the Marker Color tool previously noted. Click on any mark to erase it.
 
 The Text tool:
 

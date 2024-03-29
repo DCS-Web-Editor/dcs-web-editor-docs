@@ -10,6 +10,18 @@ Contributions to the manual are welcome via github.
 
 &nbsp;
 
+## Current State of the Project
+
+3D Web Editor : ALPHA  
+Web Editor : BETA  
+Web Viewer: [RELEASED](https://dcs-web-editor.github.io/dcs-web-viewer-deploy/)
+
+The project receives regular updates.
+
+No, this project is not dead and never will be.
+
+&nbsp;
+
 ## Accessing the Editor
 
 Navigate to [https://dcs-web-editor.vercel.app/](https://dcs-web-editor.vercel.app/) and log in.
@@ -19,8 +31,6 @@ The User page displays your patreon supporter status, as well as the links to ac
 &nbsp;
   
 ## 3D Editor
-
-***Work in progress***
 
 To access the 3D Editor, you need to be an Alpha patreon supporter. You will then have access to the **DCS Web Editor ALPHA (Canary)** on your user page.
 
