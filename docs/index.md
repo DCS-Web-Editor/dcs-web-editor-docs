@@ -1,3 +1,5 @@
+*This is a cummunity project and is not affiliated with Eagle Dynamics. The DCS logo is a trademark of Eagle Dynamics.*
+
 # Getting Started
 
 Welcome to the DCS Web Editor User Manual.
