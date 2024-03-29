@@ -44,16 +44,17 @@ Now either press Ctrl + P to run the mission, or exit and run the mission throug
 ## Connecting
 
 If you are using Brave browser, having Shields enabled will break this process. Disable it.
+We recommend Chromium / Chrome and disable browser extensions if you have issues / lag.
 
 Go to the Web Editor, load the .miz you wish to work on and press the `Connect 3D` button.
 
 ![3de](./images/3de.png)
 
-## Limitations
+## Current Limitations
 
  - By default, only missions up to 1000 units are synced in the 3D view. Othwise you need to sync them manually for performance reasons. How? Select objects via Shift click + drag and they will appear in DCS. This is to prevent a performance hog when you open a mission with thousands of statics.
  - Aircraft always spawn on ground in 3D view.
- - Objects placed on carriers will be submerged in 3D view.
+ - Objects placed on carriers will be submerged in 3D view ( fixed soon ).
  - Some objects like containers like to pile up in air while dragged. Press the blue >> sync button to bring them back to the ground.
 
 ## Operation
