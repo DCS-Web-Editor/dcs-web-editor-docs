@@ -1,5 +1,5 @@
 
-## Triggers & Zones
+# Triggers & Zones
 
 ![Triggers](./images/Triggers.png)  
   
@@ -8,18 +8,24 @@ The first element of the Triggers panel is the Trigger Rules button:
   
 This window allows the user to upload trigger rules in .json format.  
   
-Zone List:  
+## Zone List
+
 ![ZoneList](./images/ZoneList.png)  
   
-This window is similar in layout to the ones we covered before, so let's go over the main section: 
+This window is similar in layout to the ones covered previously:
+
 - Zone Name displays the zone, as well as it's color.
 - ID is a unique identifier number.
 - Radius displays the size of the zone, in meters.
 - Properties displays the amount of property key-value pairs assigned to that zone.
 - Type shows the type zone, circle or polygon.
 - Hidden once again shows whether the unit is hidden or shown.  
-  
-Next are the Circle and Polygon buttons. These buttons are utilized to place the respective zones.
+
+## Circle and Polygon Zones
+
+These buttons are utilized to place the respective zones.
+
+`LClick + Drag` from the button to place the zones on the map.
 
 ## Zone Panel
 
@@ -41,15 +47,16 @@ At the bottom is a 'Properties' section with a 'Create' button. Clicking this wi
 
 Here you will find the coordinates for the center of the zone.
 
-### Zone Manipulation
-#### Place Zones
+## Zone Manipulation
 
-To place a zone, from the main editor panel on the left, click and drag from the 'Circle' button onto the map. Where you drop it is where the zone will be placed.
+### Place Zones
 
-#### Select/Deselect Zones
+To place a zone, from the main editor panel on the left `LClick + Drag` from the button to place the zones on the map.
+
+### Select/Edit Zones
 
 Work in progress.
 
-#### Move Zones
+### Move Zones
 
 Work in progress.

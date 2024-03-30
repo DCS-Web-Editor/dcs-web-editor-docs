@@ -10,19 +10,21 @@ theme:
     
 nav:
   - Getting Started: index.md
-  - UI Tools: sections/uitools/uitools.md
-  - Mission: sections/mission/mission.md
-  - Map Options: sections/mapoptions/mapoptions.md
-  - Units: sections/units/units.md
-  - Waypoints: sections/waypoints/waypoints.md
-  - Statics: sections/statics/statics.md
-  - Triggers & Zones: sections/triggers/triggers.md
-  - Drawings: sections/drawings/drawings.md
-  - Templates: sections/templates/templates.md
-  - Collaborate: sections/collaborate/collaborate.md
-  - Plugins: sections/plugins/plugins.md
-  - 3D Editor: sections/3deditor/3deditor.md
   - FAQ: sections/faq/faq.md
+  - Editor:
+    - UI Tools: sections/uitools/uitools.md
+    - Mission: sections/mission/mission.md
+    - Map Options: sections/mapoptions/mapoptions.md
+    - Units: sections/units/units.md
+    - Waypoints: sections/waypoints/waypoints.md
+    - Statics & Bullseyes: sections/statics/statics.md
+    - Triggers & Zones: sections/triggers/triggers.md
+    - Drawings: sections/drawings/drawings.md
+    - Templates: sections/templates/templates.md
+    - Collaborate: sections/collaborate/collaborate.md
+    - Plugins: sections/plugins/plugins.md
+    - 3D Editor: sections/3deditor/3deditor.md
+
 
 extra:
   social:

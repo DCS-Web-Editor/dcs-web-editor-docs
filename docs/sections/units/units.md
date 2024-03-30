@@ -3,15 +3,14 @@
 
 ![Units](./images/Units.png)  
   
-## Overview
-
-Select the 'Unit List' to display the following:
+## Unit List
 
 ![UnitList](./images/UnitList.png)  
   
 At the top of the window you can filter via a search criteria. At the bottom right of the window are selectors for additional pages of units, as well as a display limit dropdown menu.  
   
-Breaking down the main section:  
+Breaking down the main section:
+
 - Name displays the name of the unit.  
 - ID is a unique number identifier of the unit.
 - Group is the name of the group the unit is assigned to, and gID is the group number identifier.  
@@ -25,17 +24,23 @@ Breaking down the main section:
   
 Select individual units via the selector boxes on the left-hand side. This will also select the units on the map.
 
-Following the Unit List are the Unit Selector Buttons. All of these buttons send you to the same place: the Units window:
+Following the Unit List are the Unit Selector Buttons. All of these buttons send you to the same place:
+
+## Units Window
 
 ![UnitsWindow](./images/UnitsWindow.png)  
   
-This window contains all of the placeable units of the editor. The very top contains a search field to search for specific units, as well as a coalition and country dropdown menu. In the top left are the unit type selector tabs. These mirror the unit selector buttons in the Unit category of the Editor Interface. Each named tab contains the units of the corresponding type.
+This window contains all of the placeable units of the editor. The very top contains a search field to search for specific units, as well as a coalition and country dropdown menu. In the top left are the unit type selector tabs. These mirror the unit selector buttons in the Unit category of the Editor Interface.
+
+Each named tab contains the units of the corresponding type.
 
 ## Unit Panel
 
+After placing a unit, you have access to it's Unit Panel.
+
 ![Panel](./images/Panel.png)
 
-Not the unit type and faction at the top. Just below is the name and group of the unit, which can both be changed.
+Note the unit type and faction at the top. Just below is the name and group of the unit, which can both be changed.
 
 Add unit will add a unit to this unit's group.
 
@@ -67,7 +72,7 @@ Set the Skill, Tail Number, Livery, and Callsign of the unit.
 
 ![RadioSettings](./images/RadioSettings.png)
 
-Change the radio channel frequencies for each radio. Note the frequency ranges at the top of the dropdown for easy reference.
+Change the radio channel frequencies for each radio. Note the frequency ranges above the dropdown for easy reference.
 
 ### Loadout
 
@@ -89,15 +94,17 @@ From this menu, select a preset in the top-left dropdown if desired. Hover over 
 
 This menu sets parameters for Waypoint 0 (start position) of the aircraft.
 
+More information is available in the [Waypoints](../waypoints/waypoints.md) section.
+
 ### Visibility
 
 ![Visibility](./images/Visibility.png)
 
-'Hidden' hides the unit from the editor map, if hidden units are set to invisible.
+`Hidden` hides the unit from the editor map, if hidden units are set to invisible.
 
-'Hidden on Planner' hides the unit from the briefing window at the start of a mission.
+`Hidden on Planner` hides the unit from the briefing window at the start of a mission.
 
-'Hidden on MFD' hides the unit from any aircraft's situational display, such as the F/A-18s SA page or the AH-64s TSD, etc.
+`Hidden on MFD` hides the unit from any aircraft's situational display, such as the F/A-18s SA page or the AH-64s TSD, etc.
 
 ### Coordinates
 
@@ -105,24 +112,29 @@ This menu sets parameters for Waypoint 0 (start position) of the aircraft.
 
 Displays and allows for easy copying of the unit's coordinates.
 
+Copy to clipboard by clicking a coordinate.
+
+**NOTE**: the Elevation is the ground elevation of the waypoint, not the unit.
+
 ## Unit Manipulation
+
 ### Place Units
 
-From any of the Units tabs in the Units window, click and drag a unit from the window onto the map to place.
+From any of the Units tabs in the Units window, `LClick + Drag` a unit from the window onto the map to place.
 
-Copy and Paste any unit or group of units by selecting them via Shift + LClick + Drag, and then Ctrl + C to copy, Ctrl + V to paste. You can also paste units by right-clicking on the map and selecting 'Paste Here' from the coordinate window.
+Copy and Paste any unit or group of units by selecting them via `Shift + LClick + Drag`, and then `Ctrl + C` to copy, `Ctrl + V` to paste. You can also paste units using `RClick` on the map and selecting `Paste Here` from the coordinate window.
 
 ### Select/Deselect Units
 
 Click on any unit to open it's Unit Panel.
 
-Select units by Shift + LClick + Dragging the Select Box over the unit(s).
+Select units via `Shift + LClick + Drag` ( Select Box ).
 
-Deselect units with Esc.
+Deselect units with `Esc`.
 
 ### Move Units
 
-Click and drag units to move them. Units do not need to be selected to move them with this method.
+`Click + Drag` units to move them. Units do not need to be selected to move them with this method.
 
 Select multiple units with the Select Box and move them using the same method.
 
@@ -142,9 +154,9 @@ Shift + T to transform, scale, and rotate selected units. Select units and then 
 
 ### Delete Units
 
-Press Del to delete any selected units.
+Press `Del` to delete any selected units.
 
-To delete units through the Unit List, open the Unit List and select all units you wish to delete. Then close the Unit List by clicking on the interface Unit List button. Then press Del. Note that pressing Esc in the Unit List panel will NOT close the panel, but deselect all selected units instead.
+To delete units through the Unit List, open the Unit List and select all units you wish to delete. Then close the Unit List by clicking on the interface Unit List button and press `Del`. Note that pressing `Esc` in the Unit List panel will NOT close the panel, but deselect all selected units instead.
 
 
 

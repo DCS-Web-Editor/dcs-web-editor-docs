@@ -1,54 +1,74 @@
 
-## Templates
+# Templates
 
-Templates:  
+## Local Templates
+ 
 ![Templates](./images/Templates.png)  
   
-All you're likely to see when you start off is the above; the category botton and a Manage button. You can add Template categories, and they will also get added to the Interface category dropdown menu, like so:  
-![Templates2](./images/Templates2.png)  
-  
-Hit manage and let's take a look at the main window:  
-![TemplateWindow](./images/TemplatesWindow.png)  
-  
-Like most other windows in the DCSWE, there's a search function and tabs. Notice the 'New Tab' button as well as the 'Import' button. The 'New Tab' button creates a new Template Category which you can add templates to. 'Import' directly imports a Template Category to your DCSWE.
-
-### Create Template
-
-To make a template, you first need to create a template category. Press the '+' button either up in the tabs or the '+ New Tab' button. You will now see a template category in the list on the 'Manage' tab.
+### Local Template Window
 
 ![New](./images/new.png)
 
-Press 'Rename' to name the category. You will now see it in your tabs. Click on your newly created category:
+![New2](./images/new2.png)  
+  
+`+ New Collection` will start the process of [creating a new local template](#create-template).
 
-![NewTemplate](./images/newtemplate.png)
+`Import Collection` will [import an existing template collection](#import-templates) from your pc.
 
-You will see the above. From here, you can Shift + LClick drag to select entities. Then enter a name and description and click 'Add Template' to create a template. You can have multiple templates in the same category.
+Press the edit icon to rename an existing collection.
+
+Pressing `cloud` will upload a collection to the [cloud templates](#cloud-templates).
+
+`Export` will save your collection to a local file on your PC.
+
+The trash icon will delete the collection.
+
+The tent icon will enable tent icons on the map where you placed your templates, allowing you to easily add in the units without dragging them from the templates interface.
+
+### Create Template
+
+To make a template, you first need to create a template category. Press the `+` button in the tabs or the `+ New Collection` button and name the collection whatever you wish. You will now see a template category in the list.
+
+Select your collection template from the tabs and adjust the coalition and nationality as desired.
+
+Select units on the map.
+
+![Create2](./images/create2.png)
+
+On the right side of the window, put in a name for your template. Adding a description is optional.
+
+Press `Create a new template`.
+
+This will add the template to your collection.
+
+The bottom of the window will show the author of the template.
 
 ### Place Template
 
 ![PlaceTemplate](./images/place.png)
 
-To place a template that you've created or imported, LClick and drag one of the template icons in the window onto the map.
+To place a template that you've created or imported, `LClick + Drag` one of the template icons in the window onto the map.
 
-### Update/Delete Template
+### Update Template
 
 ![Update/Delete](./images/update.png)
 
-To update a template, select it in the window. Select the new units and press 'Update'.
+To update a template select it in the window, select the new units and press `Update Selected Template`.
 
-To delete a template, select it in the tab and press 'Delete.'
+To delete a template, select it in the tab and press `Delete`.
 
-### Import Templates
+## Cloud Templates
 
-First you'll need to download templates that you wish to import. Head to the DCS Web Editor Dicord and download your desired template from the 'template-sharing' channel. Templates are provided as a .json file. Press Import in the 'Manage' tab on the Web Editor Template window, then select the .json file you downloaded. Your imported templates should now be in a new tab.
+![Templates2](./images/Templates2.png)
 
-### Delete Category
+### Cloud Template Window
 
-![New](./images/new.png)
+![window](./images/window.png)
 
-To delete a category, head back to the 'Manage' tab. Press 'Delete' next to category you wish to delete.
+This window works almost exactly like the [Local Template Window](#local-template-window).
 
+Press the magnifying glass icon to search for cloud template collections. Allow a few moments for the list to populate.
 
-
+Select your desired template and press `Add selected`. This will bookmark the collection and add it to the main page of the window.
 
 

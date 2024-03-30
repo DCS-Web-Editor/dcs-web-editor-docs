@@ -1,22 +1,19 @@
 
 # Map Options
 
-Click on Map Options to expand it:  
 ![MapOptions](./images/MapOptions.png) 
 
 ## Briefing
   
 ![Briefing](./images/Briefing.png)  
   
-As in the native editor, customize the briefing panel displayed at the beginning of a mission.  
-  
-### Briefing Template
+Customize the briefing panel displayed at the beginning of a mission.  
 
 ## Coalitions
 
 ![Coalitions](./images/Coalitions.png)  
   
-As in the native editor, customize your coalitions. Select a nation from the list and use the top three-way switch to assign it to a category. You can also select a preset from the drop-down menu in the top-left.
+Customize your coalitions. Select a nation from the list and use the top three-way switch to assign it to a category. You can also select a preset from the drop-down menu in the top-left.
   
 ## Weather
   

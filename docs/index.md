@@ -1,6 +1,7 @@
-*This is a cummunity project and is not affiliated with Eagle Dynamics. The DCS logo is a trademark of Eagle Dynamics.*
 
 # Getting Started
+
+*This is a community project and is not affiliated with Eagle Dynamics. The DCS logo is a trademark of Eagle Dynamics.*
 
 Welcome to the DCS Web Editor User Manual.
 
@@ -8,7 +9,7 @@ Use the left panel to navigate the site.
 
 **ALL CONTENT WITHIN THE MANUAL IS WORK IN PROGRESS AND IS SUBJECT TO CHANGE OR MAY BE INNACURATE**  
 
-Contributions to the manual are welcome via github.
+Contributions to the manual are welcome via [GitHub](https://github.com/DCS-Web-Editor/dcs-web-editor-docs).
 
 &nbsp;
 
