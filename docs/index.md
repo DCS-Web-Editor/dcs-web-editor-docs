@@ -5,8 +5,6 @@
 
 Welcome to the DCS Web Editor User Manual.
 
-Use the left panel to navigate the site.  
-
 **ALL CONTENT WITHIN THE MANUAL IS WORK IN PROGRESS AND IS SUBJECT TO CHANGE OR MAY BE INNACURATE**  
 
 Contributions to the manual are welcome via [GitHub](https://github.com/DCS-Web-Editor/dcs-web-editor-docs).
@@ -22,6 +20,16 @@ Web Viewer: [RELEASED](https://dcs-web-editor.github.io/dcs-web-viewer-deploy/)
 The project receives regular updates.
 
 No, this project is not dead and never will be.
+
+&nbsp;
+
+## Signing up on Patreon
+
+Go to the [Patreon](https://www.patreon.com/DcsWebEditor) page and sign up for free, Beta, or Alpha.
+
+Navigate to the Patreon settings, then [Connected Apps](https://www.patreon.com/settings/apps), and connect your Discord.
+
+Within 1-6 hours, your discord role should appear. If it does not, please message us in the [Discord](https://discord.gg/uqBfrhy9Aw).
 
 &nbsp;
 
