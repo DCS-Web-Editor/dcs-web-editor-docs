@@ -10,15 +10,21 @@ In the future, there will be an installer released that will do this for you.
 
 &nbsp;
 
-**[dcs-web-editor-gui-server.lua](./scripts/dcs-web-editor-gui-server.lua)**:
+[comment]: <> (**[dcs-web-editor-gui-server.lua](./scripts/dcs-web-editor-gui-server.lua)**:)
+
+<a href="../scripts/dcs-web-editor-gui-server.lua" download><b>dcs-web-editor-gui-server.lua</b></a>:
 
   - Move this file to `C:\Users\<your username here>\Saved Games\DCS.openbeta\Scripts\Hooks`
 
-**[dcs-web-editor-mission-server.lua](./scripts/dcs-web-editor-mission-server.lua)**:
+[comment]: <> (**[dcs-web-editor-mission-server.lua](./scripts/dcs-web-editor-mission-server.lua)**:)
+
+<a href="../scripts/dcs-web-editor-mission-server.lua" download><b>dcs-web-editor-mission-server.lua</b></a>:
 
   - Move this file to `C:\Users\<your username here>\Saved Games\DCS.openbeta\Scripts`
 
-**[MissionScripting.lua](./scripts/MissionScripting.lua)**
+[comment]: <> (**[MissionScripting.lua](./scripts/MissionScripting.lua)**)
+
+<a href="../scripts/MissionScripting.lua" download><b>MissionScripting.lua</b></a>:
 
   - Note that this file already exists in the DCS structure.
   - If you're already familiar with what this file does, you may wish to download this file, compare, and make the required additions instead of overwriting.
