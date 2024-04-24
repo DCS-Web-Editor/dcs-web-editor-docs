@@ -6,25 +6,33 @@
 
 You need to download and install three files for the 3D Editor to connect.
 
-In the future, there will be an installer released that will do this for you.
+In the future, there will be an official installer released that will do this for you.
 
 &nbsp;
 
-[comment]: <> (**[dcs-web-editor-gui-server.lua](./scripts/dcs-web-editor-gui-server.lua)**:)
+For now, there are two ways to move the files to the correct location:
 
-<a href="../scripts/dcs-web-editor-gui-server.lua" download><b>dcs-web-editor-gui-server.lua</b></a>:
+### Powershell Method
+
+<a href="../scripts/3D-Script-Installer.ps1" download><b>3D-Script-Installer.ps1</b></a>
+
+  - Move this file to your MAIN INSTALLATION folder, ex: `Drive:\Program Files\Eagle Dynamics\DCS World OpenBeta`, right-click the file and select 'Run as Powershell'.
+  - This script assumes you have never moved your Saved Games folder, and your Saved Games folder is called DCS.openbeta.
+  - Requires Powershell (the vast majority of Windows machines have this preinstalled).
+
+### Manual Method
+
+<a href="../scripts/dcs-web-editor-gui-server.lua" download><b>dcs-web-editor-gui-server.lua</b></a>
 
   - Move this file to `C:\Users\<your username here>\Saved Games\DCS.openbeta\Scripts\Hooks`
 
-[comment]: <> (**[dcs-web-editor-mission-server.lua](./scripts/dcs-web-editor-mission-server.lua)**:)
 
-<a href="../scripts/dcs-web-editor-mission-server.lua" download><b>dcs-web-editor-mission-server.lua</b></a>:
+<a href="../scripts/dcs-web-editor-mission-server.lua" download><b>dcs-web-editor-mission-server.lua</b></a>
 
   - Move this file to `C:\Users\<your username here>\Saved Games\DCS.openbeta\Scripts`
 
-[comment]: <> (**[MissionScripting.lua](./scripts/MissionScripting.lua)**)
 
-<a href="../scripts/MissionScripting.lua" download><b>MissionScripting.lua</b></a>:
+<a href="../scripts/MissionScripting.lua" download><b>MissionScripting.lua</b></a>
 
   - Note that this file already exists in the DCS structure.
   - If you're already familiar with what this file does, you may wish to download this file, compare, and make the required additions instead of overwriting.

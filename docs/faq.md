@@ -4,7 +4,7 @@
 A: The Viewer is intended for showcasing missions and mission planning. It has no ability to edit or change a mission. The Editor, on the other hand, can change or create new missions.
 
 **Q: When will the DCS Web Editor be released?**  
-A: The [DCS Web Viewer](https://dcs-web-editor.github.io/dcs-web-viewer-deploy/) has been released. The DCS Web Editor is available to contributors, patrons, and sponsors in both an ALPHA and BETA version. There is a 7 day free trial for DCS Web Editor Alpha or Beta Supporter access. https://www.patreon.com/DcsWebEditor/
+A: The [DCS Web Viewer](https://dcs-web-editor.github.io/dcs-web-viewer-deploy/) has been released. The DCS Web Editor is available to contributors, patrons, and sponsors in both an ALPHA and BETA version. There is a 7 day free trial for DCS Web Editor Alpha or Beta Supporter access. [https://www.patreon.com/DcsWebEditor/](https://www.patreon.com/DcsWebEditor/)
 
 **Q: Will the DCS Web Editor & Viewer be free?**  
 A: Yes, the DCS Web Editor will be released as a free version after closed alpha and beta. [DCS Web Viewer](https://dcs-web-editor.github.io/dcs-web-viewer-deploy/) has already been released for free.
