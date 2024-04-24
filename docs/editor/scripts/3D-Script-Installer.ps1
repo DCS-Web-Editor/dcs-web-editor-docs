@@ -47,9 +47,12 @@ Write-Host "User $MyName found, adding to Saved Games path." -f Green
 ## Set Saved Games path variable
 Write-Host "Testing Saved Games path..." -f Yellow
 
-$SavedGamesPath = "C:\Users\$MyName\Saved Games\DCS.openbeta"
-
-if (Test-Path $SavedGamesPath) {
+if (Test-Path "C:\Users\$MyName\Saved Games\DCS.openbeta") {
+  $SavedGamesPath = "C:\Users\$MyName\Saved Games\DCS.openbeta"
+  Write-Host "Found Saved Games folder at $SavedGamesPath." -f Green
+}
+elseif (Test-Path "C:\Users\$MyName\Saved Games\DCS") {
+  $SavedGamesPath = "C:\Users\$MyName\Saved Games\DCS"
   Write-Host "Found Saved Games folder at $SavedGamesPath." -f Green
 }
 else {

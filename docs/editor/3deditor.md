@@ -17,7 +17,7 @@ For now, there are two ways to move the files to the correct location:
 <a href="../scripts/3D-Script-Installer.ps1" download><b>3D-Script-Installer.ps1</b></a>
 
   - Move this file to your MAIN INSTALLATION folder, ex: `Drive:\Program Files\Eagle Dynamics\DCS World OpenBeta`, right-click the file and select 'Run with Powershell'.
-  - This script assumes you have never moved your Saved Games folder, and your Saved Games folder is called DCS.openbeta.
+  - This script assumes you have never moved your Saved Games folder.
   - Requires Powershell (the vast majority of Windows machines have this pre-installed).
 
 ### Manual Method
