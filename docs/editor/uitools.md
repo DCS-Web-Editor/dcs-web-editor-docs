@@ -29,6 +29,8 @@ The `GoogleMaps` and `SkyVector` buttons will take you to the respective mapping
 - Ctrl + Z -> Undo ( up to 20 steps ).
 - u -> toggle (U)NITS window.
 - l -> toggle UNIT (L)IST window.
+- t -> toggle MY (T)EMPLATES window.
+- r -> toggle CLOUD (remote) TEMPLATES window.
 - Shift + R -> Random rotation of selected units.
 - Shift + Alt + R -> Align selected units rotation to 0°.
 - Shift + L -> Align selected units to line ( uses paste x/y offset ).
