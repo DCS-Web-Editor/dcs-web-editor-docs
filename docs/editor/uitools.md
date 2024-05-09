@@ -27,8 +27,8 @@ The `GoogleMaps` and `SkyVector` buttons will take you to the respective mapping
 - Ctrl + V -> Paste selected units, triggers.
 - Ctrl + L -> Load mission.
 - Ctrl + Z -> Undo ( up to 20 steps ).
-- u -> toggle UNITS window.
-- l -> toggle UNIT LIST window.
+- u -> toggle (U)NITS window.
+- l -> toggle UNIT (L)IST window.
 - Shift + R -> Random rotation of selected units.
 - Shift + Alt + R -> Align selected units rotation to 0°.
 - Shift + L -> Align selected units to line ( uses paste x/y offset ).
