@@ -98,3 +98,7 @@ Go to the Web Editor, load the .miz you wish to work on and press the `Connect 3
 If you see this error when starting DCS, it means your MissionScripting.lua is incorrect. You may have placed it in the wrong folder or forgot to restart DCS after overwriting the file. Make sure you follow [the installation.](#manual-method)
 
 ![3deditor-panel](./images/dcs-error.png)
+
+### DWE connection error
+If you see this error, it means DCS is not running or you haven't started the empty singleplayer missions we provided. Make sure the mission you start in DCS matches the theater in DCS Web Editor.
+> :cross_mark: Mission not running. You need to start an empty SinglePlayer mission in DCS
