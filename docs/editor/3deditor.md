@@ -101,6 +101,15 @@ If you see this error when starting DCS, it means your MissionScripting.lua is i
 
 ![3deditor-panel](./images/dcs-error.png)
 
+
+
+
 ### 3D Editor connection error
-If you see this error, it means DCS is not running (on the same machine) or you haven't started the empty singleplayer missions we provided. Make sure the mission you start in DCS matches the theater in DCS Web Editor.
+If you see this error, it means DCS is not running (on the same machine). Or the dcs-web-editor-gui-server.lua file is not installed correctly.
+Make sure you follow [the installation.](#manual-method)
+
+> :cross_mark: Cannot connect to DCS. It requires the DcsWebEditor scripts to be installed. And DCS needs to be running an empty mission
+
+
+If you see this error, it means  you haven't started the empty singleplayer missions we provided. Also make sure the mission you start in DCS matches the theater in DCS Web Editor.
 > :cross_mark: Mission not running. You need to start an empty SinglePlayer mission in DCS
