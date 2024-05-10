@@ -3631,10 +3631,11 @@ local ____exports = {}
 function ____exports.getHeading(self, it)
     local pos = it:getPosition()
     local headingRadians = math.atan2(pos.x.z, pos.x.x)
+    local toRad = 180 / math.pi
     if headingRadians < 0 then
-        return headingRadians + 2 * math.pi
+        return (headingRadians + 2 * math.pi) * toRad
     end
-    return headingRadians * 180 / math.pi
+    return headingRadians * toRad
 end
 --- Converts the degrees heading (0-360) to radians (0-2pi).
 -- 
@@ -3714,6 +3715,8 @@ local __TS__SparseArraySpread = ____lualib.__TS__SparseArraySpread
 local __TS__New = ____lualib.__TS__New
 local __TS__SourceMapTraceBack = ____lualib.__TS__SourceMapTraceBack
 local ____exports = {}
+local ____tslua_2Dcommon = require("lua_modules.@flying-dice.tslua-common.dist.index")
+local Logger = ____tslua_2Dcommon.Logger
 local ____getHeading = require("src.utils.getHeading")
 local getHeading = ____getHeading.getHeading
 local getHeadingRadians = ____getHeading.getHeadingRadians
@@ -3722,6 +3725,8 @@ local LandUtils = ____land.LandUtils
 ____exports.StaticObjectService = __TS__Class()
 local StaticObjectService = ____exports.StaticObjectService
 StaticObjectService.name = "StaticObjectService"
+local logger = __TS__New(Logger, "StaticRouter")
+
 function StaticObjectService.prototype.____constructor(self)
     self.staticObjectIdToNameCache = {}
 end
@@ -3769,6 +3774,16 @@ function StaticObjectService.prototype.addStaticObject(self, createStaticObjectD
             local x = ____temp_2.x
             local y = ____temp_2.y
             local heading = getHeadingRadians(nil, createStaticObjectDto.heading)
+            local linkHeadingDeg = linkUnit and getHeading(nil, linkUnit)
+            local linkHeading = linkUnit and getHeadingRadians(
+                nil,
+                linkHeadingDeg
+            )
+            local dx = linkUnit and linkUnitPos and (x - linkUnitPos.x)
+            local dy = linkUnit and linkUnitPos and (y - linkUnitPos.y)
+            logger:info("objects heading " .. tostring(heading))
+            logger:info("link heading deg" .. tostring(linkHeadingDeg))
+            logger:info("link heading rad" .. tostring(linkHeading))
             local staticObject = coalition.addStaticObject(
                 createStaticObjectDto.country,
                 {
@@ -3783,12 +3798,9 @@ function StaticObjectService.prototype.addStaticObject(self, createStaticObjectD
                     alt_type = AI.Task.AltitudeType.BARO,
                     linkUnit = linkUnit and linkUnit:getID(),
                     offsets = linkUnit and linkUnitPos and ({
-                        x = x - linkUnitPos.x,
-                        y = y - linkUnitPos.y,
-                        angle = heading - getHeadingRadians(
-                            nil,
-                            getHeading(nil, linkUnit)
-                        )
+                        x = (dx * math.cos(-linkHeading)) - (dy * math.sin(-linkHeading)),
+                        y = (dy * math.cos(-linkHeading)) + (dx * math.sin(-linkHeading)),
+                        angle = heading - linkHeading
                     }) or nil
                 }
             )
