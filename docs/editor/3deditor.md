@@ -61,6 +61,9 @@ Go to the Web Editor, load the .miz you wish to work on and press the `Connect 3
 
 ![3deditor-panel](./images/3deditor-panel.png)
 
+You can also go to [http://127.0.0.1:31480/health](http://127.0.0.1:31480/health) to check if the server is running
+
+
 ## Current Limitations
 
  - By default, only missions up to 1000 units are synced in the 3D view. Othwise you need to sync them manually for performance reasons. How? Select objects via Shift click + drag and they will appear in DCS. This is to prevent a performance hog when you open a mission with thousands of statics.
@@ -105,11 +108,17 @@ If you see this error when starting DCS, it means your MissionScripting.lua is i
 
 
 ### 3D Editor connection error
+
 If you see this error, it means DCS is not running (on the same machine). Or the dcs-web-editor-gui-server.lua file is not installed correctly.
 Make sure you follow [the installation.](#manual-method)
 
 > :cross_mark: Cannot connect to DCS. It requires the DcsWebEditor scripts to be installed. And DCS needs to be running an empty mission
 
 
+### Mission not running
 If you see this error, it means  you haven't started the empty singleplayer missions we provided. Also make sure the mission you start in DCS matches the theater in DCS Web Editor.
 > :cross_mark: Mission not running. You need to start an empty SinglePlayer mission in DCS
+
+### Cant spawn objects
+Should you see this error, it usually means you tried to spawn an object/mod you haven't installed in DCS. Mostly missing mods etc. Sometimes you may also need to restart DCS if you see many network errors. Or disconnect and connect again in the DWE menu.
+![3deditor-panel](./images/spawn-error.webp)
