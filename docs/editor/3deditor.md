@@ -22,12 +22,12 @@ For now, there are two ways to move the files to the correct location:
 
 ### Manual Method
 
-<a href="../scripts/dcs-web-editor-gui-server.lua" download><b>dcs-web-editor-gui-server.lua</b></a>
+<a href="../scripts/dcs-web-editor-gui-server.lua" download><b>dcs-web-editor-gui-server.lua</b></a>(0.4.12)
 
   - Move this file to `C:\Users\<your username here>\Saved Games\DCS.openbeta\Scripts\Hooks`
 
 
-<a href="../scripts/dcs-web-editor-mission-server.lua" download><b>dcs-web-editor-mission-server.lua</b></a>
+<a href="../scripts/dcs-web-editor-mission-server.lua" download><b>dcs-web-editor-mission-server.lua</b></a>(0.4.12)
 
   - Move this file to `C:\Users\<your username here>\Saved Games\DCS.openbeta\Scripts`
 
@@ -111,6 +111,7 @@ If you see this error when starting DCS, it means your MissionScripting.lua is i
 
 If you see this error, it means DCS is not running (on the same machine). Or the dcs-web-editor-gui-server.lua file is not installed correctly.
 Make sure you follow [the installation.](#manual-method)
+You can also go to [http://127.0.0.1:31480/health](http://127.0.0.1:31480/health) to check if the server is running.
 
 > :cross_mark: Cannot connect to DCS. It requires the DcsWebEditor scripts to be installed. And DCS needs to be running an empty mission
 
