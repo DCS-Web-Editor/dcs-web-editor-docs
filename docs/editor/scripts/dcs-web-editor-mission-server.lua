@@ -3631,11 +3631,10 @@ local ____exports = {}
 function ____exports.getHeading(self, it)
     local pos = it:getPosition()
     local headingRadians = math.atan2(pos.x.z, pos.x.x)
-    local toRad = 180 / math.pi
     if headingRadians < 0 then
-        return (headingRadians + 2 * math.pi) * toRad
+        headingRadians = headingRadians + 2 * math.pi
     end
-    return headingRadians * toRad
+    return headingRadians * 180 / math.pi
 end
 --- Converts the degrees heading (0-360) to radians (0-2pi).
 -- 
@@ -3643,7 +3642,7 @@ end
 -- @returns The heading in radians.
 function ____exports.getHeadingRadians(self, degrees)
     if degrees < 0 then
-        return (degrees + 360) * (math.pi / 180)
+        degrees = degrees + 360
     end
     return degrees * (math.pi / 180)
 end
@@ -3715,8 +3714,6 @@ local __TS__SparseArraySpread = ____lualib.__TS__SparseArraySpread
 local __TS__New = ____lualib.__TS__New
 local __TS__SourceMapTraceBack = ____lualib.__TS__SourceMapTraceBack
 local ____exports = {}
-local ____tslua_2Dcommon = require("lua_modules.@flying-dice.tslua-common.dist.index")
-local Logger = ____tslua_2Dcommon.Logger
 local ____getHeading = require("src.utils.getHeading")
 local getHeading = ____getHeading.getHeading
 local getHeadingRadians = ____getHeading.getHeadingRadians
@@ -3725,8 +3722,6 @@ local LandUtils = ____land.LandUtils
 ____exports.StaticObjectService = __TS__Class()
 local StaticObjectService = ____exports.StaticObjectService
 StaticObjectService.name = "StaticObjectService"
-local logger = __TS__New(Logger, "StaticRouter")
-
 function StaticObjectService.prototype.____constructor(self)
     self.staticObjectIdToNameCache = {}
 end
@@ -3774,16 +3769,6 @@ function StaticObjectService.prototype.addStaticObject(self, createStaticObjectD
             local x = ____temp_2.x
             local y = ____temp_2.y
             local heading = getHeadingRadians(nil, createStaticObjectDto.heading)
-            local linkHeadingDeg = linkUnit and getHeading(nil, linkUnit)
-            local linkHeading = linkUnit and getHeadingRadians(
-                nil,
-                linkHeadingDeg
-            )
-            local dx = linkUnit and linkUnitPos and (x - linkUnitPos.x)
-            local dy = linkUnit and linkUnitPos and (y - linkUnitPos.y)
-            logger:info("objects heading " .. tostring(heading))
-            logger:info("link heading deg" .. tostring(linkHeadingDeg))
-            logger:info("link heading rad" .. tostring(linkHeading))
             local staticObject = coalition.addStaticObject(
                 createStaticObjectDto.country,
                 {
@@ -3798,9 +3783,12 @@ function StaticObjectService.prototype.addStaticObject(self, createStaticObjectD
                     alt_type = AI.Task.AltitudeType.BARO,
                     linkUnit = linkUnit and linkUnit:getID(),
                     offsets = linkUnit and linkUnitPos and ({
-                        x = (dx * math.cos(-linkHeading)) - (dy * math.sin(-linkHeading)),
-                        y = (dy * math.cos(-linkHeading)) + (dx * math.sin(-linkHeading)),
-                        angle = heading - linkHeading
+                        x = x - linkUnitPos.x,
+                        y = y - linkUnitPos.y,
+                        angle = heading - getHeadingRadians(
+                            nil,
+                            getHeading(nil, linkUnit)
+                        )
                     }) or nil
                 }
             )
@@ -4440,6 +4428,7 @@ local __TS__SourceMapTraceBack = ____lualib.__TS__SourceMapTraceBack
 local ____exports = {}
 local ____tslua_2Dcommon = require("lua_modules.@flying-dice.tslua-common.dist.index")
 local Logger = ____tslua_2Dcommon.Logger
+local base64 = require("lua_modules.@flying-dice.tslua-base64.index")
 local ____dcs_2Dweb_2Deditor_2Dcommon = require("lua_modules.dcs-web-editor-common.dist.index")
 local HttpError = ____dcs_2Dweb_2Deditor_2Dcommon.HttpError
 local HttpStatus = ____dcs_2Dweb_2Deditor_2Dcommon.HttpStatus
@@ -4476,7 +4465,26 @@ app:get(
     },
     function(____, req, res)
         logger:info("Getting Unit by Name")
-        local unit = staticObjectsService:findByName(req.parameters.name)
+        local name = base64.decode(req.parameters.name)
+        local unit = staticObjectsService:findByName(name)
+        if not unit then
+            error(
+                __TS__New(HttpError, HttpStatus.NOT_FOUND, ("Static Object with name " .. name) .. " not found"),
+                0
+            )
+        end
+        res:json(toDto(nil, unit))
+    end
+)
+app:get(
+    "/position-player",
+    {
+        operationId = "getPlayerPosition",
+        responses = responses(nil, {[HttpStatus.OK] = {{description = "Result"}, "StaticObjectDto"}})
+    },
+    function(____, req, res)
+        logger:info("Getting Unit by Name")
+        local unit = world.getPlayer()
         if not unit then
             error(
                 __TS__New(HttpError, HttpStatus.NOT_FOUND, ("Static Object with name " .. req.parameters.name) .. " not found"),
@@ -4486,8 +4494,180 @@ app:get(
         res:json(toDto(nil, unit))
     end
 )
+app:get(
+    "/mission-data",
+    {
+        operationId = "getMissionData",
+        responses = responses(nil, {[HttpStatus.OK] = {{description = "Result"}, "StaticObjectDto"}})
+    },
+    function(____, req, res)
+        logger:info("Getting Mission Data")
+        local mission = env.mission
+        if not mission then
+            error(
+                __TS__New(HttpError, HttpStatus.NOT_FOUND, "Mission not found"),
+                0
+            )
+        end
+        res:send(net.lua2json(mission))
+    end
+)
 return ____exports
  end,
+["lua_modules.@flying-dice.tslua-base64.index"] = function(...) 
+--[[
+ base64 -- v1.5.3 public domain Lua base64 encoder/decoder
+ no warranty implied; use at your own risk
+ Needs bit32.extract function. If not present it's implemented using BitOp
+ or Lua 5.3 native bit operators. For Lua 5.1 fallbacks to pure Lua
+ implementation inspired by Rici Lake's post:
+   http://ricilake.blogspot.co.uk/2007/10/iterating-bits-in-lua.html
+ author: Ilya Kolbin (iskolbin@gmail.com)
+ url: github.com/iskolbin/lbase64
+ COMPATIBILITY
+ Lua 5.1+, LuaJIT
+ LICENSE
+ See end of file for license information.
+--]]
+
+local base64 = {}
+
+local extract = _G.bit32 and _G.bit32.extract -- Lua 5.2/Lua 5.3 in compatibility mode
+if not extract then
+    if _G.bit then
+        -- LuaJIT
+        local shl, shr, band = _G.bit.lshift, _G.bit.rshift, _G.bit.band
+        extract = function(v, from, width)
+            return band(shr(v, from), shl(1, width) - 1)
+        end
+    elseif _G._VERSION == "Lua 5.1" then
+        extract = function(v, from, width)
+            local w = 0
+            local flag = 2 ^ from
+            for i = 0, width - 1 do
+                local flag2 = flag + flag
+                if v % flag2 >= flag then
+                    w = w + 2 ^ i
+                end
+                flag = flag2
+            end
+            return w
+        end
+    else
+        -- Lua 5.3+
+        extract = load [[return function( v, from, width )
+			return ( v >> from ) & ((1 << width) - 1)
+		end]]()
+    end
+end
+
+function base64.makeencoder(s62, s63, spad)
+    local encoder = {}
+    for b64code, char in pairs { [0] = 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+                                 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
+                                 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+                                 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2',
+                                 '3', '4', '5', '6', '7', '8', '9', s62 or '+', s63 or '/', spad or '=' } do
+        encoder[b64code] = char:byte()
+    end
+    return encoder
+end
+
+function base64.makedecoder(s62, s63, spad)
+    local decoder = {}
+    for b64code, charcode in pairs(base64.makeencoder(s62, s63, spad)) do
+        decoder[charcode] = b64code
+    end
+    return decoder
+end
+
+local DEFAULT_ENCODER = base64.makeencoder()
+local DEFAULT_DECODER = base64.makedecoder()
+
+local char, concat = string.char, table.concat
+
+function base64.encode(str, encoder, usecaching)
+    encoder = encoder or DEFAULT_ENCODER
+    local t, k, n = {}, 1, #str
+    local lastn = n % 3
+    local cache = {}
+    for i = 1, n - lastn, 3 do
+        local a, b, c = str:byte(i, i + 2)
+        local v = a * 0x10000 + b * 0x100 + c
+        local s
+        if usecaching then
+            s = cache[v]
+            if not s then
+                s = char(encoder[extract(v, 18, 6)], encoder[extract(v, 12, 6)], encoder[extract(v, 6, 6)], encoder[extract(v, 0, 6)])
+                cache[v] = s
+            end
+        else
+            s = char(encoder[extract(v, 18, 6)], encoder[extract(v, 12, 6)], encoder[extract(v, 6, 6)], encoder[extract(v, 0, 6)])
+        end
+        t[k] = s
+        k = k + 1
+    end
+    if lastn == 2 then
+        local a, b = str:byte(n - 1, n)
+        local v = a * 0x10000 + b * 0x100
+        t[k] = char(encoder[extract(v, 18, 6)], encoder[extract(v, 12, 6)], encoder[extract(v, 6, 6)], encoder[64])
+    elseif lastn == 1 then
+        local v = str:byte(n) * 0x10000
+        t[k] = char(encoder[extract(v, 18, 6)], encoder[extract(v, 12, 6)], encoder[64], encoder[64])
+    end
+    return concat(t)
+end
+
+function base64.decode(b64, decoder, usecaching)
+    decoder = decoder or DEFAULT_DECODER
+    local pattern = '[^%w%+%/%=]'
+    if decoder then
+        local s62, s63
+        for charcode, b64code in pairs(decoder) do
+            if b64code == 62 then
+                s62 = charcode
+            elseif b64code == 63 then
+                s63 = charcode
+            end
+        end
+        pattern = ('[^%%w%%%s%%%s%%=]'):format(char(s62), char(s63))
+    end
+    b64 = b64:gsub(pattern, '')
+    local cache = usecaching and {}
+    local t, k = {}, 1
+    local n = #b64
+    local padding = b64:sub(-2) == '==' and 2 or b64:sub(-1) == '=' and 1 or 0
+    for i = 1, padding > 0 and n - 4 or n, 4 do
+        local a, b, c, d = b64:byte(i, i + 3)
+        local s
+        if usecaching then
+            local v0 = a * 0x1000000 + b * 0x10000 + c * 0x100 + d
+            s = cache[v0]
+            if not s then
+                local v = decoder[a] * 0x40000 + decoder[b] * 0x1000 + decoder[c] * 0x40 + decoder[d]
+                s = char(extract(v, 16, 8), extract(v, 8, 8), extract(v, 0, 8))
+                cache[v0] = s
+            end
+        else
+            local v = decoder[a] * 0x40000 + decoder[b] * 0x1000 + decoder[c] * 0x40 + decoder[d]
+            s = char(extract(v, 16, 8), extract(v, 8, 8), extract(v, 0, 8))
+        end
+        t[k] = s
+        k = k + 1
+    end
+    if padding == 1 then
+        local a, b, c = b64:byte(n - 3, n - 1)
+        local v = decoder[a] * 0x40000 + decoder[b] * 0x1000 + decoder[c] * 0x40
+        t[k] = char(extract(v, 16, 8), extract(v, 8, 8))
+    elseif padding == 2 then
+        local a, b = b64:byte(n - 3, n - 2)
+        local v = decoder[a] * 0x40000 + decoder[b] * 0x1000
+        t[k] = char(extract(v, 16, 8))
+    end
+    return concat(t)
+end
+
+return base64 end,
 ["src.routes.index"] = function(...) 
 local ____lualib = require("lualib_bundle")
 local __TS__SourceMapTraceBack = ____lualib.__TS__SourceMapTraceBack
@@ -4623,5 +4803,5 @@ return ____exports
  end,
 }
 local __TS__SourceMapTraceBack = require("lualib_bundle").__TS__SourceMapTraceBack
-__TS__SourceMapTraceBack(debug.getinfo(1).short_src, {["458"] = {line = 1, file = "package.json"},["459"] = {line = 2, file = "package.json"},["460"] = {line = 3, file = "package.json"},["461"] = {line = 4, file = "package.json"},["462"] = {line = 5, file = "package.json"},["463"] = {line = 6, file = "package.json"},["464"] = {line = 7, file = "package.json"},["465"] = {line = 8, file = "package.json"},["466"] = {line = 9, file = "package.json"},["467"] = {line = 10, file = "package.json"},["468"] = {line = 11, file = "package.json"},["469"] = {line = 12, file = "package.json"},["470"] = {line = 13, file = "package.json"},["471"] = {line = 7, file = "package.json"},["472"] = {line = 15, file = "package.json"},["473"] = {line = 16, file = "package.json"},["474"] = {line = 17, file = "package.json"},["475"] = {line = 18, file = "package.json"},["476"] = {line = 19, file = "package.json"},["477"] = {line = 20, file = "package.json"},["478"] = {line = 15, file = "package.json"},["479"] = {line = 22, file = "package.json"},["480"] = {line = 23, file = "package.json"},["481"] = {line = 24, file = "package.json"},["482"] = {line = 25, file = "package.json"},["483"] = {line = 26, file = "package.json"},["484"] = {line = 27, file = "package.json"},["485"] = {line = 28, file = "package.json"},["486"] = {line = 29, file = "package.json"},["487"] = {line = 22, file = "package.json"},["488"] = {line = 1, file = "package.json"},["494"] = {line = 1, file = "config.ts"},["495"] = {line = 1, file = "config.ts"},["496"] = {line = 1, file = "config.ts"},["497"] = {line = 3, file = "config.ts"},["498"] = {line = 4, file = "config.ts"},["499"] = {line = 5, file = "config.ts"},["500"] = {line = 6, file = "config.ts"},["501"] = {line = 7, file = "config.ts"},["502"] = {line = 8, file = "config.ts"},["503"] = {line = 9, file = "config.ts"},["504"] = {line = 4, file = "config.ts"},["505"] = {line = 12, file = "config.ts"},["604"] = {line = 1, file = "dto.openapi.json"},["611"] = {line = 1, file = "app.ts"},["612"] = {line = 1, file = "app.ts"},["613"] = {line = 2, file = "app.ts"},["614"] = {line = 2, file = "app.ts"},["615"] = {line = 3, file = "app.ts"},["616"] = {line = 3, file = "app.ts"},["617"] = {line = 3, file = "app.ts"},["618"] = {line = 3, file = "app.ts"},["619"] = {line = 4, file = "app.ts"},["620"] = {line = 4, file = "app.ts"},["621"] = {line = 5, file = "app.ts"},["622"] = {line = 7, file = "app.ts"},["623"] = {line = 19, file = "app.ts"},["3631"] = {line = 13, file = "getHeading.ts"},["3632"] = {line = 14, file = "getHeading.ts"},["3633"] = {line = 15, file = "getHeading.ts"},["3634"] = {line = 17, file = "getHeading.ts"},["3635"] = {line = 18, file = "getHeading.ts"},["3637"] = {line = 21, file = "getHeading.ts"},["3638"] = {line = 13, file = "getHeading.ts"},["3643"] = {line = 30, file = "getHeading.ts"},["3644"] = {line = 31, file = "getHeading.ts"},["3645"] = {line = 32, file = "getHeading.ts"},["3647"] = {line = 35, file = "getHeading.ts"},["3648"] = {line = 30, file = "getHeading.ts"},["3656"] = {line = 4, file = "land.ts"},["3657"] = {line = 15, file = "land.ts"},["3658"] = {line = 16, file = "land.ts"},["3659"] = {line = 16, file = "land.ts"},["3660"] = {line = 17, file = "land.ts"},["3661"] = {line = 18, file = "land.ts"},["3662"] = {line = 16, file = "land.ts"},["3663"] = {line = 19, file = "land.ts"},["3664"] = {line = 16, file = "land.ts"},["3665"] = {line = 15, file = "land.ts"},["3666"] = {line = 28, file = "land.ts"},["3667"] = {line = 29, file = "land.ts"},["3668"] = {line = 28, file = "land.ts"},["3669"] = {line = 38, file = "land.ts"},["3670"] = {line = 39, file = "land.ts"},["3671"] = {line = 38, file = "land.ts"},["3672"] = {line = 48, file = "land.ts"},["3673"] = {line = 49, file = "land.ts"},["3674"] = {line = 48, file = "land.ts"},["3675"] = {line = 60, file = "land.ts"},["3676"] = {line = 61, file = "land.ts"},["3677"] = {line = 62, file = "land.ts"},["3678"] = {line = 63, file = "land.ts"},["3679"] = {line = 64, file = "land.ts"},["3680"] = {line = 65, file = "land.ts"},["3681"] = {line = 66, file = "land.ts"},["3682"] = {line = 61, file = "land.ts"},["3683"] = {line = 60, file = "land.ts"},["3684"] = {line = 76, file = "land.ts"},["3685"] = {line = 77, file = "land.ts"},["3686"] = {line = 78, file = "land.ts"},["3687"] = {line = 76, file = "land.ts"},["3688"] = {line = 87, file = "land.ts"},["3689"] = {line = 88, file = "land.ts"},["3690"] = {line = 88, file = "land.ts"},["3691"] = {line = 88, file = "land.ts"},["3692"] = {line = 88, file = "land.ts"},["3693"] = {line = 89, file = "land.ts"},["3694"] = {line = 87, file = "land.ts"},["3695"] = {line = 98, file = "land.ts"},["3696"] = {line = 99, file = "land.ts"},["3697"] = {line = 100, file = "land.ts"},["3698"] = {line = 98, file = "land.ts"},["3699"] = {line = 109, file = "land.ts"},["3700"] = {line = 110, file = "land.ts"},["3701"] = {line = 111, file = "land.ts"},["3702"] = {line = 109, file = "land.ts"},["3703"] = {line = 4, file = "land.ts"},["3717"] = {line = 7, file = "static-object.service.ts"},["3718"] = {line = 7, file = "static-object.service.ts"},["3719"] = {line = 7, file = "static-object.service.ts"},["3720"] = {line = 8, file = "static-object.service.ts"},["3721"] = {line = 8, file = "static-object.service.ts"},["3722"] = {line = 10, file = "static-object.service.ts"},["3723"] = {line = 10, file = "static-object.service.ts"},["3724"] = {line = 10, file = "static-object.service.ts"},["3726"] = {line = 11, file = "static-object.service.ts"},["3727"] = {line = 10, file = "static-object.service.ts"},["3728"] = {line = 13, file = "static-object.service.ts"},["3729"] = {line = 15, file = "static-object.service.ts"},["3730"] = {line = 15, file = "static-object.service.ts"},["3732"] = {line = 17, file = "static-object.service.ts"},["3733"] = {line = 18, file = "static-object.service.ts"},["3734"] = {line = 19, file = "static-object.service.ts"},["3735"] = {line = 22, file = "static-object.service.ts"},["3736"] = {line = 23, file = "static-object.service.ts"},["3738"] = {line = 26, file = "static-object.service.ts"},["3740"] = {line = 29, file = "static-object.service.ts"},["3741"] = {line = 31, file = "static-object.service.ts"},["3742"] = {line = 31, file = "static-object.service.ts"},["3743"] = {line = 32, file = "static-object.service.ts"},["3744"] = {line = 31, file = "static-object.service.ts"},["3745"] = {line = 36, file = "static-object.service.ts"},["3746"] = {line = 37, file = "static-object.service.ts"},["3748"] = {line = 43, file = "static-object.service.ts"},["3750"] = {line = 46, file = "static-object.service.ts"},["3751"] = {line = 13, file = "static-object.service.ts"},["3752"] = {line = 49, file = "static-object.service.ts"},["3753"] = {line = 50, file = "static-object.service.ts"},["3754"] = {line = 51, file = "static-object.service.ts"},["3755"] = {line = 49, file = "static-object.service.ts"},["3756"] = {line = 54, file = "static-object.service.ts"},["3759"] = {line = 98, file = "static-object.service.ts"},["3762"] = {line = 58, file = "static-object.service.ts"},["3763"] = {line = 59, file = "static-object.service.ts"},["3764"] = {line = 61, file = "static-object.service.ts"},["3765"] = {line = 62, file = "static-object.service.ts"},["3766"] = {line = 63, file = "static-object.service.ts"},["3768"] = {line = 66, file = "static-object.service.ts"},["3769"] = {line = 66, file = "static-object.service.ts"},["3770"] = {line = 66, file = "static-object.service.ts"},["3771"] = {line = 67, file = "static-object.service.ts"},["3772"] = {line = 69, file = "static-object.service.ts"},["3773"] = {line = 70, file = "static-object.service.ts"},["3774"] = {line = 71, file = "static-object.service.ts"},["3775"] = {line = 72, file = "static-object.service.ts"},["3776"] = {line = 73, file = "static-object.service.ts"},["3777"] = {line = 74, file = "static-object.service.ts"},["3778"] = {line = 75, file = "static-object.service.ts"},["3779"] = {line = 76, file = "static-object.service.ts"},["3780"] = {line = 77, file = "static-object.service.ts"},["3781"] = {line = 78, file = "static-object.service.ts"},["3782"] = {line = 79, file = "static-object.service.ts"},["3783"] = {line = 80, file = "static-object.service.ts"},["3784"] = {line = 81, file = "static-object.service.ts"},["3785"] = {line = 82, file = "static-object.service.ts"},["3786"] = {line = 85, file = "static-object.service.ts"},["3787"] = {line = 86, file = "static-object.service.ts"},["3788"] = {line = 87, file = "static-object.service.ts"},["3789"] = {line = 87, file = "static-object.service.ts"},["3790"] = {line = 87, file = "static-object.service.ts"},["3791"] = {line = 87, file = "static-object.service.ts"},["3792"] = {line = 84, file = "static-object.service.ts"},["3793"] = {line = 71, file = "static-object.service.ts"},["3794"] = {line = 69, file = "static-object.service.ts"},["3795"] = {line = 92, file = "static-object.service.ts"},["3796"] = {line = 96, file = "static-object.service.ts"},["3802"] = {line = 57, file = "static-object.service.ts"},["3805"] = {line = 54, file = "static-object.service.ts"},["3806"] = {line = 102, file = "static-object.service.ts"},["3807"] = {line = 103, file = "static-object.service.ts"},["3808"] = {line = 105, file = "static-object.service.ts"},["3809"] = {line = 106, file = "static-object.service.ts"},["3810"] = {line = 108, file = "static-object.service.ts"},["3811"] = {line = 108, file = "static-object.service.ts"},["3812"] = {line = 108, file = "static-object.service.ts"},["3814"] = {line = 109, file = "static-object.service.ts"},["3815"] = {line = 110, file = "static-object.service.ts"},["3816"] = {line = 108, file = "static-object.service.ts"},["3817"] = {line = 111, file = "static-object.service.ts"},["3818"] = {line = 108, file = "static-object.service.ts"},["3819"] = {line = 108, file = "static-object.service.ts"},["3820"] = {line = 117, file = "static-object.service.ts"},["3821"] = {line = 118, file = "static-object.service.ts"},["3824"] = {line = 122, file = "static-object.service.ts"},["3825"] = {line = 102, file = "static-object.service.ts"},["3826"] = {line = 125, file = "static-object.service.ts"},["3827"] = {line = 127, file = "static-object.service.ts"},["3830"] = {line = 128, file = "static-object.service.ts"},["3834"] = {line = 129, file = "static-object.service.ts"},["3836"] = {line = 126, file = "static-object.service.ts"},["3837"] = {line = 125, file = "static-object.service.ts"},["3838"] = {line = 134, file = "static-object.service.ts"},["3849"] = {line = 1, file = "coalition.ts"},["3850"] = {line = 1, file = "coalition.ts"},["3851"] = {line = 3, file = "coalition.ts"},["3852"] = {line = 4, file = "coalition.ts"},["3853"] = {line = 6, file = "coalition.ts"},["3854"] = {line = 8, file = "coalition.ts"},["3855"] = {line = 9, file = "coalition.ts"},["3856"] = {line = 10, file = "coalition.ts"},["3857"] = {line = 12, file = "coalition.ts"},["3858"] = {line = 12, file = "coalition.ts"},["3859"] = {line = 19, file = "coalition.ts"},["3860"] = {line = 19, file = "coalition.ts"},["3861"] = {line = 20, file = "coalition.ts"},["3862"] = {line = 20, file = "coalition.ts"},["3863"] = {line = 21, file = "coalition.ts"},["3864"] = {line = 21, file = "coalition.ts"},["3865"] = {line = 23, file = "coalition.ts"},["3870"] = {line = 30, file = "coalition.ts"},["3871"] = {line = 30, file = "coalition.ts"},["3872"] = {line = 31, file = "coalition.ts"},["3873"] = {line = 32, file = "coalition.ts"},["3874"] = {line = 33, file = "coalition.ts"},["3875"] = {line = 34, file = "coalition.ts"},["3876"] = {line = 35, file = "coalition.ts"},["3877"] = {line = 36, file = "coalition.ts"},["3878"] = {line = 37, file = "coalition.ts"},["3879"] = {line = 30, file = "coalition.ts"},["3880"] = {line = 30, file = "coalition.ts"},["3881"] = {line = 40, file = "coalition.ts"},["3882"] = {line = 41, file = "coalition.ts"},["3883"] = {line = 42, file = "coalition.ts"},["3884"] = {line = 43, file = "coalition.ts"},["3885"] = {line = 44, file = "coalition.ts"},["3886"] = {line = 45, file = "coalition.ts"},["3887"] = {line = 42, file = "coalition.ts"},["3888"] = {line = 49, file = "coalition.ts"},["3889"] = {line = 50, file = "coalition.ts"},["3890"] = {line = 52, file = "coalition.ts"},["3891"] = {line = 54, file = "coalition.ts"},["3892"] = {line = 49, file = "coalition.ts"},["3893"] = {line = 40, file = "coalition.ts"},["3894"] = {line = 58, file = "coalition.ts"},["3895"] = {line = 59, file = "coalition.ts"},["3896"] = {line = 60, file = "coalition.ts"},["3897"] = {line = 61, file = "coalition.ts"},["3898"] = {line = 62, file = "coalition.ts"},["3899"] = {line = 63, file = "coalition.ts"},["3900"] = {line = 64, file = "coalition.ts"},["3901"] = {line = 60, file = "coalition.ts"},["3902"] = {line = 68, file = "coalition.ts"},["3903"] = {line = 69, file = "coalition.ts"},["3905"] = {line = 70, file = "coalition.ts"},["3909"] = {line = 73, file = "coalition.ts"},["3910"] = {line = 74, file = "coalition.ts"},["3911"] = {line = 78, file = "coalition.ts"},["3912"] = {line = 78, file = "coalition.ts"},["3913"] = {line = 78, file = "coalition.ts"},["3914"] = {line = 79, file = "coalition.ts"},["3915"] = {line = 78, file = "coalition.ts"},["3916"] = {line = 82, file = "coalition.ts"},["3917"] = {line = 78, file = "coalition.ts"},["3918"] = {line = 84, file = "coalition.ts"},["3919"] = {line = 84, file = "coalition.ts"},["3920"] = {line = 84, file = "coalition.ts"},["3921"] = {line = 84, file = "coalition.ts"},["3922"] = {line = 68, file = "coalition.ts"},["3923"] = {line = 58, file = "coalition.ts"},["3924"] = {line = 88, file = "coalition.ts"},["3925"] = {line = 89, file = "coalition.ts"},["3926"] = {line = 90, file = "coalition.ts"},["3927"] = {line = 91, file = "coalition.ts"},["3928"] = {line = 92, file = "coalition.ts"},["3929"] = {line = 93, file = "coalition.ts"},["3930"] = {line = 96, file = "coalition.ts"},["3931"] = {line = 90, file = "coalition.ts"},["3932"] = {line = 100, file = "coalition.ts"},["3933"] = {line = 101, file = "coalition.ts"},["3935"] = {line = 102, file = "coalition.ts"},["3939"] = {line = 105, file = "coalition.ts"},["3940"] = {line = 107, file = "coalition.ts"},["3941"] = {line = 109, file = "coalition.ts"},["3943"] = {line = 110, file = "coalition.ts"},["3947"] = {line = 116, file = "coalition.ts"},["3948"] = {line = 100, file = "coalition.ts"},["3949"] = {line = 88, file = "coalition.ts"},["3950"] = {line = 120, file = "coalition.ts"},["3951"] = {line = 121, file = "coalition.ts"},["3952"] = {line = 122, file = "coalition.ts"},["3953"] = {line = 123, file = "coalition.ts"},["3954"] = {line = 124, file = "coalition.ts"},["3955"] = {line = 125, file = "coalition.ts"},["3956"] = {line = 126, file = "coalition.ts"},["3957"] = {line = 122, file = "coalition.ts"},["3958"] = {line = 130, file = "coalition.ts"},["3959"] = {line = 131, file = "coalition.ts"},["3960"] = {line = 133, file = "coalition.ts"},["3962"] = {line = 134, file = "coalition.ts"},["3966"] = {line = 137, file = "coalition.ts"},["3967"] = {line = 141, file = "coalition.ts"},["3968"] = {line = 143, file = "coalition.ts"},["3969"] = {line = 143, file = "coalition.ts"},["3970"] = {line = 143, file = "coalition.ts"},["3973"] = {line = 145, file = "coalition.ts"},["3974"] = {line = 147, file = "coalition.ts"},["3975"] = {line = 148, file = "coalition.ts"},["3979"] = {line = 143, file = "coalition.ts"},["3980"] = {line = 143, file = "coalition.ts"},["3981"] = {line = 153, file = "coalition.ts"},["3982"] = {line = 153, file = "coalition.ts"},["3983"] = {line = 153, file = "coalition.ts"},["3984"] = {line = 153, file = "coalition.ts"},["3985"] = {line = 130, file = "coalition.ts"},["3986"] = {line = 120, file = "coalition.ts"},["3987"] = {line = 157, file = "coalition.ts"},["3988"] = {line = 158, file = "coalition.ts"},["3989"] = {line = 159, file = "coalition.ts"},["3990"] = {line = 160, file = "coalition.ts"},["3991"] = {line = 161, file = "coalition.ts"},["3992"] = {line = 162, file = "coalition.ts"},["3993"] = {line = 159, file = "coalition.ts"},["3994"] = {line = 166, file = "coalition.ts"},["3995"] = {line = 167, file = "coalition.ts"},["3996"] = {line = 169, file = "coalition.ts"},["3997"] = {line = 172, file = "coalition.ts"},["3998"] = {line = 172, file = "coalition.ts"},["3999"] = {line = 172, file = "coalition.ts"},["4000"] = {line = 173, file = "coalition.ts"},["4001"] = {line = 172, file = "coalition.ts"},["4002"] = {line = 172, file = "coalition.ts"},["4003"] = {line = 176, file = "coalition.ts"},["4004"] = {line = 166, file = "coalition.ts"},["4005"] = {line = 157, file = "coalition.ts"},["4407"] = {line = 1, file = "health.ts"},["4408"] = {line = 1, file = "health.ts"},["4409"] = {line = 1, file = "health.ts"},["4410"] = {line = 2, file = "health.ts"},["4411"] = {line = 2, file = "health.ts"},["4412"] = {line = 5, file = "health.ts"},["4413"] = {line = 6, file = "health.ts"},["4414"] = {line = 7, file = "health.ts"},["4415"] = {line = 8, file = "health.ts"},["4416"] = {line = 9, file = "health.ts"},["4417"] = {line = 7, file = "health.ts"},["4418"] = {line = 13, file = "health.ts"},["4419"] = {line = 14, file = "health.ts"},["4420"] = {line = 13, file = "health.ts"},["4421"] = {line = 5, file = "health.ts"},["4429"] = {line = 1, file = "livemap.ts"},["4430"] = {line = 1, file = "livemap.ts"},["4431"] = {line = 3, file = "livemap.ts"},["4432"] = {line = 5, file = "livemap.ts"},["4433"] = {line = 7, file = "livemap.ts"},["4434"] = {line = 9, file = "livemap.ts"},["4435"] = {line = 11, file = "livemap.ts"},["4436"] = {line = 11, file = "livemap.ts"},["4437"] = {line = 13, file = "livemap.ts"},["4438"] = {line = 13, file = "livemap.ts"},["4439"] = {line = 14, file = "livemap.ts"},["4440"] = {line = 14, file = "livemap.ts"},["4441"] = {line = 15, file = "livemap.ts"},["4442"] = {line = 15, file = "livemap.ts"},["4443"] = {line = 17, file = "livemap.ts"},["4448"] = {line = 24, file = "livemap.ts"},["4449"] = {line = 24, file = "livemap.ts"},["4450"] = {line = 25, file = "livemap.ts"},["4451"] = {line = 26, file = "livemap.ts"},["4452"] = {line = 27, file = "livemap.ts"},["4453"] = {line = 28, file = "livemap.ts"},["4454"] = {line = 29, file = "livemap.ts"},["4455"] = {line = 30, file = "livemap.ts"},["4456"] = {line = 31, file = "livemap.ts"},["4457"] = {line = 24, file = "livemap.ts"},["4458"] = {line = 24, file = "livemap.ts"},["4459"] = {line = 34, file = "livemap.ts"},["4460"] = {line = 35, file = "livemap.ts"},["4461"] = {line = 36, file = "livemap.ts"},["4462"] = {line = 37, file = "livemap.ts"},["4463"] = {line = 38, file = "livemap.ts"},["4464"] = {line = 36, file = "livemap.ts"},["4465"] = {line = 42, file = "livemap.ts"},["4466"] = {line = 43, file = "livemap.ts"},["4467"] = {line = 45, file = "livemap.ts"},["4468"] = {line = 47, file = "livemap.ts"},["4470"] = {line = 48, file = "livemap.ts"},["4474"] = {line = 54, file = "livemap.ts"},["4475"] = {line = 42, file = "livemap.ts"},["4476"] = {line = 34, file = "livemap.ts"},["4483"] = {line = 1, file = "index.ts"},["4484"] = {line = 2, file = "index.ts"},["4485"] = {line = 3, file = "index.ts"},["4493"] = {line = 1, file = "index.ts"},["4494"] = {line = 1, file = "index.ts"},["4495"] = {line = 2, file = "index.ts"},["4496"] = {line = 2, file = "index.ts"},["4497"] = {line = 3, file = "index.ts"},["4498"] = {line = 3, file = "index.ts"},["4499"] = {line = 4, file = "index.ts"},["4500"] = {line = 6, file = "index.ts"},["4501"] = {line = 8, file = "index.ts"},["4502"] = {line = 9, file = "index.ts"},["4503"] = {line = 10, file = "index.ts"},["4505"] = {line = 13, file = "index.ts"},["4506"] = {line = 14, file = "index.ts"},["4507"] = {line = 16, file = "index.ts"},["4508"] = {line = 17, file = "index.ts"},["4509"] = {line = 18, file = "index.ts"},["4511"] = {line = 21, file = "index.ts"},["4512"] = {line = 22, file = "index.ts"},["4515"] = {line = 26, file = "index.ts"},["4518"] = {line = 24, file = "index.ts"},["4524"] = {line = 29, file = "index.ts"},["4525"] = {line = 22, file = "index.ts"},["4526"] = {line = 31, file = "index.ts"},["4527"] = {line = 32, file = "index.ts"},["4528"] = {line = 21, file = "index.ts"},["4529"] = {line = 35, file = "index.ts"},["4530"] = {line = 39, file = "index.ts"},["4552"] = {line = 3, file = "unit.service.ts"},["4553"] = {line = 3, file = "unit.service.ts"},["4554"] = {line = 4, file = "unit.service.ts"},["4555"] = {line = 4, file = "unit.service.ts"},["4556"] = {line = 6, file = "unit.service.ts"},["4557"] = {line = 6, file = "unit.service.ts"},["4558"] = {line = 6, file = "unit.service.ts"},["4560"] = {line = 6, file = "unit.service.ts"},["4561"] = {line = 7, file = "unit.service.ts"},["4562"] = {line = 8, file = "unit.service.ts"},["4563"] = {line = 9, file = "unit.service.ts"},["4564"] = {line = 7, file = "unit.service.ts"},["4565"] = {line = 11, file = "unit.service.ts"},["4568"] = {line = 33, file = "unit.service.ts"},["4571"] = {line = 13, file = "unit.service.ts"},["4572"] = {line = 14, file = "unit.service.ts"},["4573"] = {line = 15, file = "unit.service.ts"},["4574"] = {line = 16, file = "unit.service.ts"},["4576"] = {line = 17, file = "unit.service.ts"},["4577"] = {line = 18, file = "unit.service.ts"},["4578"] = {line = 19, file = "unit.service.ts"},["4579"] = {line = 20, file = "unit.service.ts"},["4580"] = {line = 21, file = "unit.service.ts"},["4581"] = {line = 16, file = "unit.service.ts"},["4582"] = {line = 22, file = "unit.service.ts"},["4583"] = {line = 16, file = "unit.service.ts"},["4584"] = {line = 13, file = "unit.service.ts"},["4585"] = {line = 31, file = "unit.service.ts"},["4591"] = {line = 12, file = "unit.service.ts"},["4594"] = {line = 11, file = "unit.service.ts"},["4595"] = {line = 38, file = "unit.service.ts"},["4606"] = {line = 13, file = "getSpeed.ts"},["4607"] = {line = 14, file = "getSpeed.ts"},["4608"] = {line = 15, file = "getSpeed.ts"},["4609"] = {line = 13, file = "getSpeed.ts"}});
+__TS__SourceMapTraceBack(debug.getinfo(1).short_src, {["458"] = {line = 1, file = "package.json"},["459"] = {line = 2, file = "package.json"},["460"] = {line = 3, file = "package.json"},["461"] = {line = 4, file = "package.json"},["462"] = {line = 5, file = "package.json"},["463"] = {line = 6, file = "package.json"},["464"] = {line = 7, file = "package.json"},["465"] = {line = 8, file = "package.json"},["466"] = {line = 9, file = "package.json"},["467"] = {line = 10, file = "package.json"},["468"] = {line = 11, file = "package.json"},["469"] = {line = 12, file = "package.json"},["470"] = {line = 13, file = "package.json"},["471"] = {line = 7, file = "package.json"},["472"] = {line = 15, file = "package.json"},["473"] = {line = 16, file = "package.json"},["474"] = {line = 17, file = "package.json"},["475"] = {line = 18, file = "package.json"},["476"] = {line = 19, file = "package.json"},["477"] = {line = 20, file = "package.json"},["478"] = {line = 15, file = "package.json"},["479"] = {line = 22, file = "package.json"},["480"] = {line = 23, file = "package.json"},["481"] = {line = 24, file = "package.json"},["482"] = {line = 25, file = "package.json"},["483"] = {line = 26, file = "package.json"},["484"] = {line = 27, file = "package.json"},["485"] = {line = 28, file = "package.json"},["486"] = {line = 29, file = "package.json"},["487"] = {line = 22, file = "package.json"},["488"] = {line = 1, file = "package.json"},["494"] = {line = 1, file = "config.ts"},["495"] = {line = 1, file = "config.ts"},["496"] = {line = 1, file = "config.ts"},["497"] = {line = 3, file = "config.ts"},["498"] = {line = 4, file = "config.ts"},["499"] = {line = 5, file = "config.ts"},["500"] = {line = 6, file = "config.ts"},["501"] = {line = 7, file = "config.ts"},["502"] = {line = 8, file = "config.ts"},["503"] = {line = 9, file = "config.ts"},["504"] = {line = 4, file = "config.ts"},["505"] = {line = 12, file = "config.ts"},["604"] = {line = 1, file = "dto.openapi.json"},["611"] = {line = 1, file = "app.ts"},["612"] = {line = 1, file = "app.ts"},["613"] = {line = 2, file = "app.ts"},["614"] = {line = 2, file = "app.ts"},["615"] = {line = 3, file = "app.ts"},["616"] = {line = 3, file = "app.ts"},["617"] = {line = 3, file = "app.ts"},["618"] = {line = 3, file = "app.ts"},["619"] = {line = 4, file = "app.ts"},["620"] = {line = 4, file = "app.ts"},["621"] = {line = 5, file = "app.ts"},["622"] = {line = 7, file = "app.ts"},["623"] = {line = 19, file = "app.ts"},["3631"] = {line = 13, file = "getHeading.ts"},["3632"] = {line = 14, file = "getHeading.ts"},["3633"] = {line = 15, file = "getHeading.ts"},["3634"] = {line = 17, file = "getHeading.ts"},["3635"] = {line = 18, file = "getHeading.ts"},["3637"] = {line = 21, file = "getHeading.ts"},["3638"] = {line = 13, file = "getHeading.ts"},["3643"] = {line = 30, file = "getHeading.ts"},["3644"] = {line = 31, file = "getHeading.ts"},["3645"] = {line = 32, file = "getHeading.ts"},["3647"] = {line = 35, file = "getHeading.ts"},["3648"] = {line = 30, file = "getHeading.ts"},["3656"] = {line = 4, file = "land.ts"},["3657"] = {line = 15, file = "land.ts"},["3658"] = {line = 16, file = "land.ts"},["3659"] = {line = 16, file = "land.ts"},["3660"] = {line = 17, file = "land.ts"},["3661"] = {line = 18, file = "land.ts"},["3662"] = {line = 16, file = "land.ts"},["3663"] = {line = 19, file = "land.ts"},["3664"] = {line = 16, file = "land.ts"},["3665"] = {line = 15, file = "land.ts"},["3666"] = {line = 28, file = "land.ts"},["3667"] = {line = 29, file = "land.ts"},["3668"] = {line = 28, file = "land.ts"},["3669"] = {line = 38, file = "land.ts"},["3670"] = {line = 39, file = "land.ts"},["3671"] = {line = 38, file = "land.ts"},["3672"] = {line = 48, file = "land.ts"},["3673"] = {line = 49, file = "land.ts"},["3674"] = {line = 48, file = "land.ts"},["3675"] = {line = 60, file = "land.ts"},["3676"] = {line = 61, file = "land.ts"},["3677"] = {line = 62, file = "land.ts"},["3678"] = {line = 63, file = "land.ts"},["3679"] = {line = 64, file = "land.ts"},["3680"] = {line = 65, file = "land.ts"},["3681"] = {line = 66, file = "land.ts"},["3682"] = {line = 61, file = "land.ts"},["3683"] = {line = 60, file = "land.ts"},["3684"] = {line = 76, file = "land.ts"},["3685"] = {line = 77, file = "land.ts"},["3686"] = {line = 78, file = "land.ts"},["3687"] = {line = 76, file = "land.ts"},["3688"] = {line = 87, file = "land.ts"},["3689"] = {line = 88, file = "land.ts"},["3690"] = {line = 88, file = "land.ts"},["3691"] = {line = 88, file = "land.ts"},["3692"] = {line = 88, file = "land.ts"},["3693"] = {line = 89, file = "land.ts"},["3694"] = {line = 87, file = "land.ts"},["3695"] = {line = 98, file = "land.ts"},["3696"] = {line = 99, file = "land.ts"},["3697"] = {line = 100, file = "land.ts"},["3698"] = {line = 98, file = "land.ts"},["3699"] = {line = 109, file = "land.ts"},["3700"] = {line = 110, file = "land.ts"},["3701"] = {line = 111, file = "land.ts"},["3702"] = {line = 109, file = "land.ts"},["3703"] = {line = 4, file = "land.ts"},["3717"] = {line = 7, file = "static-object.service.ts"},["3718"] = {line = 7, file = "static-object.service.ts"},["3719"] = {line = 7, file = "static-object.service.ts"},["3720"] = {line = 8, file = "static-object.service.ts"},["3721"] = {line = 8, file = "static-object.service.ts"},["3722"] = {line = 10, file = "static-object.service.ts"},["3723"] = {line = 10, file = "static-object.service.ts"},["3724"] = {line = 10, file = "static-object.service.ts"},["3726"] = {line = 11, file = "static-object.service.ts"},["3727"] = {line = 10, file = "static-object.service.ts"},["3728"] = {line = 13, file = "static-object.service.ts"},["3729"] = {line = 15, file = "static-object.service.ts"},["3730"] = {line = 15, file = "static-object.service.ts"},["3732"] = {line = 17, file = "static-object.service.ts"},["3733"] = {line = 18, file = "static-object.service.ts"},["3734"] = {line = 19, file = "static-object.service.ts"},["3735"] = {line = 22, file = "static-object.service.ts"},["3736"] = {line = 23, file = "static-object.service.ts"},["3738"] = {line = 26, file = "static-object.service.ts"},["3740"] = {line = 29, file = "static-object.service.ts"},["3741"] = {line = 31, file = "static-object.service.ts"},["3742"] = {line = 31, file = "static-object.service.ts"},["3743"] = {line = 32, file = "static-object.service.ts"},["3744"] = {line = 31, file = "static-object.service.ts"},["3745"] = {line = 36, file = "static-object.service.ts"},["3746"] = {line = 37, file = "static-object.service.ts"},["3748"] = {line = 43, file = "static-object.service.ts"},["3750"] = {line = 46, file = "static-object.service.ts"},["3751"] = {line = 13, file = "static-object.service.ts"},["3752"] = {line = 49, file = "static-object.service.ts"},["3753"] = {line = 50, file = "static-object.service.ts"},["3754"] = {line = 51, file = "static-object.service.ts"},["3755"] = {line = 49, file = "static-object.service.ts"},["3756"] = {line = 54, file = "static-object.service.ts"},["3759"] = {line = 98, file = "static-object.service.ts"},["3762"] = {line = 58, file = "static-object.service.ts"},["3763"] = {line = 59, file = "static-object.service.ts"},["3764"] = {line = 61, file = "static-object.service.ts"},["3765"] = {line = 62, file = "static-object.service.ts"},["3766"] = {line = 63, file = "static-object.service.ts"},["3768"] = {line = 66, file = "static-object.service.ts"},["3769"] = {line = 66, file = "static-object.service.ts"},["3770"] = {line = 66, file = "static-object.service.ts"},["3771"] = {line = 67, file = "static-object.service.ts"},["3772"] = {line = 69, file = "static-object.service.ts"},["3773"] = {line = 70, file = "static-object.service.ts"},["3774"] = {line = 71, file = "static-object.service.ts"},["3775"] = {line = 72, file = "static-object.service.ts"},["3776"] = {line = 73, file = "static-object.service.ts"},["3777"] = {line = 74, file = "static-object.service.ts"},["3778"] = {line = 75, file = "static-object.service.ts"},["3779"] = {line = 76, file = "static-object.service.ts"},["3780"] = {line = 77, file = "static-object.service.ts"},["3781"] = {line = 78, file = "static-object.service.ts"},["3782"] = {line = 79, file = "static-object.service.ts"},["3783"] = {line = 80, file = "static-object.service.ts"},["3784"] = {line = 81, file = "static-object.service.ts"},["3785"] = {line = 82, file = "static-object.service.ts"},["3786"] = {line = 85, file = "static-object.service.ts"},["3787"] = {line = 86, file = "static-object.service.ts"},["3788"] = {line = 87, file = "static-object.service.ts"},["3789"] = {line = 87, file = "static-object.service.ts"},["3790"] = {line = 87, file = "static-object.service.ts"},["3791"] = {line = 87, file = "static-object.service.ts"},["3792"] = {line = 84, file = "static-object.service.ts"},["3793"] = {line = 71, file = "static-object.service.ts"},["3794"] = {line = 69, file = "static-object.service.ts"},["3795"] = {line = 92, file = "static-object.service.ts"},["3796"] = {line = 96, file = "static-object.service.ts"},["3802"] = {line = 57, file = "static-object.service.ts"},["3805"] = {line = 54, file = "static-object.service.ts"},["3806"] = {line = 102, file = "static-object.service.ts"},["3807"] = {line = 103, file = "static-object.service.ts"},["3808"] = {line = 105, file = "static-object.service.ts"},["3809"] = {line = 106, file = "static-object.service.ts"},["3810"] = {line = 108, file = "static-object.service.ts"},["3811"] = {line = 108, file = "static-object.service.ts"},["3812"] = {line = 108, file = "static-object.service.ts"},["3814"] = {line = 109, file = "static-object.service.ts"},["3815"] = {line = 110, file = "static-object.service.ts"},["3816"] = {line = 108, file = "static-object.service.ts"},["3817"] = {line = 111, file = "static-object.service.ts"},["3818"] = {line = 108, file = "static-object.service.ts"},["3819"] = {line = 108, file = "static-object.service.ts"},["3820"] = {line = 117, file = "static-object.service.ts"},["3821"] = {line = 118, file = "static-object.service.ts"},["3824"] = {line = 122, file = "static-object.service.ts"},["3825"] = {line = 102, file = "static-object.service.ts"},["3826"] = {line = 125, file = "static-object.service.ts"},["3827"] = {line = 127, file = "static-object.service.ts"},["3830"] = {line = 128, file = "static-object.service.ts"},["3834"] = {line = 129, file = "static-object.service.ts"},["3836"] = {line = 126, file = "static-object.service.ts"},["3837"] = {line = 125, file = "static-object.service.ts"},["3838"] = {line = 134, file = "static-object.service.ts"},["3849"] = {line = 1, file = "coalition.ts"},["3850"] = {line = 1, file = "coalition.ts"},["3851"] = {line = 3, file = "coalition.ts"},["3852"] = {line = 4, file = "coalition.ts"},["3853"] = {line = 6, file = "coalition.ts"},["3854"] = {line = 8, file = "coalition.ts"},["3855"] = {line = 9, file = "coalition.ts"},["3856"] = {line = 10, file = "coalition.ts"},["3857"] = {line = 12, file = "coalition.ts"},["3858"] = {line = 12, file = "coalition.ts"},["3859"] = {line = 19, file = "coalition.ts"},["3860"] = {line = 19, file = "coalition.ts"},["3861"] = {line = 20, file = "coalition.ts"},["3862"] = {line = 20, file = "coalition.ts"},["3863"] = {line = 21, file = "coalition.ts"},["3864"] = {line = 21, file = "coalition.ts"},["3865"] = {line = 23, file = "coalition.ts"},["3870"] = {line = 30, file = "coalition.ts"},["3871"] = {line = 30, file = "coalition.ts"},["3872"] = {line = 31, file = "coalition.ts"},["3873"] = {line = 32, file = "coalition.ts"},["3874"] = {line = 33, file = "coalition.ts"},["3875"] = {line = 34, file = "coalition.ts"},["3876"] = {line = 35, file = "coalition.ts"},["3877"] = {line = 36, file = "coalition.ts"},["3878"] = {line = 37, file = "coalition.ts"},["3879"] = {line = 30, file = "coalition.ts"},["3880"] = {line = 30, file = "coalition.ts"},["3881"] = {line = 40, file = "coalition.ts"},["3882"] = {line = 41, file = "coalition.ts"},["3883"] = {line = 42, file = "coalition.ts"},["3884"] = {line = 43, file = "coalition.ts"},["3885"] = {line = 44, file = "coalition.ts"},["3886"] = {line = 45, file = "coalition.ts"},["3887"] = {line = 42, file = "coalition.ts"},["3888"] = {line = 49, file = "coalition.ts"},["3889"] = {line = 50, file = "coalition.ts"},["3890"] = {line = 52, file = "coalition.ts"},["3891"] = {line = 54, file = "coalition.ts"},["3892"] = {line = 49, file = "coalition.ts"},["3893"] = {line = 40, file = "coalition.ts"},["3894"] = {line = 58, file = "coalition.ts"},["3895"] = {line = 59, file = "coalition.ts"},["3896"] = {line = 60, file = "coalition.ts"},["3897"] = {line = 61, file = "coalition.ts"},["3898"] = {line = 62, file = "coalition.ts"},["3899"] = {line = 63, file = "coalition.ts"},["3900"] = {line = 64, file = "coalition.ts"},["3901"] = {line = 60, file = "coalition.ts"},["3902"] = {line = 68, file = "coalition.ts"},["3903"] = {line = 69, file = "coalition.ts"},["3905"] = {line = 70, file = "coalition.ts"},["3909"] = {line = 73, file = "coalition.ts"},["3910"] = {line = 74, file = "coalition.ts"},["3911"] = {line = 78, file = "coalition.ts"},["3912"] = {line = 78, file = "coalition.ts"},["3913"] = {line = 78, file = "coalition.ts"},["3914"] = {line = 79, file = "coalition.ts"},["3915"] = {line = 78, file = "coalition.ts"},["3916"] = {line = 82, file = "coalition.ts"},["3917"] = {line = 78, file = "coalition.ts"},["3918"] = {line = 84, file = "coalition.ts"},["3919"] = {line = 84, file = "coalition.ts"},["3920"] = {line = 84, file = "coalition.ts"},["3921"] = {line = 84, file = "coalition.ts"},["3922"] = {line = 68, file = "coalition.ts"},["3923"] = {line = 58, file = "coalition.ts"},["3924"] = {line = 88, file = "coalition.ts"},["3925"] = {line = 89, file = "coalition.ts"},["3926"] = {line = 90, file = "coalition.ts"},["3927"] = {line = 91, file = "coalition.ts"},["3928"] = {line = 92, file = "coalition.ts"},["3929"] = {line = 93, file = "coalition.ts"},["3930"] = {line = 96, file = "coalition.ts"},["3931"] = {line = 90, file = "coalition.ts"},["3932"] = {line = 100, file = "coalition.ts"},["3933"] = {line = 101, file = "coalition.ts"},["3935"] = {line = 102, file = "coalition.ts"},["3939"] = {line = 105, file = "coalition.ts"},["3940"] = {line = 107, file = "coalition.ts"},["3941"] = {line = 109, file = "coalition.ts"},["3943"] = {line = 110, file = "coalition.ts"},["3947"] = {line = 116, file = "coalition.ts"},["3948"] = {line = 100, file = "coalition.ts"},["3949"] = {line = 88, file = "coalition.ts"},["3950"] = {line = 120, file = "coalition.ts"},["3951"] = {line = 121, file = "coalition.ts"},["3952"] = {line = 122, file = "coalition.ts"},["3953"] = {line = 123, file = "coalition.ts"},["3954"] = {line = 124, file = "coalition.ts"},["3955"] = {line = 125, file = "coalition.ts"},["3956"] = {line = 126, file = "coalition.ts"},["3957"] = {line = 122, file = "coalition.ts"},["3958"] = {line = 130, file = "coalition.ts"},["3959"] = {line = 131, file = "coalition.ts"},["3960"] = {line = 133, file = "coalition.ts"},["3962"] = {line = 134, file = "coalition.ts"},["3966"] = {line = 137, file = "coalition.ts"},["3967"] = {line = 141, file = "coalition.ts"},["3968"] = {line = 143, file = "coalition.ts"},["3969"] = {line = 143, file = "coalition.ts"},["3970"] = {line = 143, file = "coalition.ts"},["3973"] = {line = 145, file = "coalition.ts"},["3974"] = {line = 147, file = "coalition.ts"},["3975"] = {line = 148, file = "coalition.ts"},["3979"] = {line = 143, file = "coalition.ts"},["3980"] = {line = 143, file = "coalition.ts"},["3981"] = {line = 153, file = "coalition.ts"},["3982"] = {line = 153, file = "coalition.ts"},["3983"] = {line = 153, file = "coalition.ts"},["3984"] = {line = 153, file = "coalition.ts"},["3985"] = {line = 130, file = "coalition.ts"},["3986"] = {line = 120, file = "coalition.ts"},["3987"] = {line = 157, file = "coalition.ts"},["3988"] = {line = 158, file = "coalition.ts"},["3989"] = {line = 159, file = "coalition.ts"},["3990"] = {line = 160, file = "coalition.ts"},["3991"] = {line = 161, file = "coalition.ts"},["3992"] = {line = 162, file = "coalition.ts"},["3993"] = {line = 159, file = "coalition.ts"},["3994"] = {line = 166, file = "coalition.ts"},["3995"] = {line = 167, file = "coalition.ts"},["3996"] = {line = 169, file = "coalition.ts"},["3997"] = {line = 172, file = "coalition.ts"},["3998"] = {line = 172, file = "coalition.ts"},["3999"] = {line = 172, file = "coalition.ts"},["4000"] = {line = 173, file = "coalition.ts"},["4001"] = {line = 172, file = "coalition.ts"},["4002"] = {line = 172, file = "coalition.ts"},["4003"] = {line = 176, file = "coalition.ts"},["4004"] = {line = 166, file = "coalition.ts"},["4005"] = {line = 157, file = "coalition.ts"},["4407"] = {line = 1, file = "health.ts"},["4408"] = {line = 1, file = "health.ts"},["4409"] = {line = 1, file = "health.ts"},["4410"] = {line = 2, file = "health.ts"},["4411"] = {line = 2, file = "health.ts"},["4412"] = {line = 5, file = "health.ts"},["4413"] = {line = 6, file = "health.ts"},["4414"] = {line = 7, file = "health.ts"},["4415"] = {line = 8, file = "health.ts"},["4416"] = {line = 9, file = "health.ts"},["4417"] = {line = 7, file = "health.ts"},["4418"] = {line = 13, file = "health.ts"},["4419"] = {line = 14, file = "health.ts"},["4420"] = {line = 13, file = "health.ts"},["4421"] = {line = 5, file = "health.ts"},["4429"] = {line = 1, file = "livemap.ts"},["4430"] = {line = 1, file = "livemap.ts"},["4431"] = {line = 3, file = "livemap.ts"},["4432"] = {line = 4, file = "livemap.ts"},["4433"] = {line = 4, file = "livemap.ts"},["4434"] = {line = 4, file = "livemap.ts"},["4435"] = {line = 4, file = "livemap.ts"},["4436"] = {line = 5, file = "livemap.ts"},["4437"] = {line = 5, file = "livemap.ts"},["4438"] = {line = 7, file = "livemap.ts"},["4439"] = {line = 7, file = "livemap.ts"},["4440"] = {line = 8, file = "livemap.ts"},["4441"] = {line = 8, file = "livemap.ts"},["4442"] = {line = 9, file = "livemap.ts"},["4443"] = {line = 9, file = "livemap.ts"},["4444"] = {line = 11, file = "livemap.ts"},["4449"] = {line = 18, file = "livemap.ts"},["4450"] = {line = 18, file = "livemap.ts"},["4451"] = {line = 19, file = "livemap.ts"},["4452"] = {line = 20, file = "livemap.ts"},["4453"] = {line = 21, file = "livemap.ts"},["4454"] = {line = 22, file = "livemap.ts"},["4455"] = {line = 23, file = "livemap.ts"},["4456"] = {line = 24, file = "livemap.ts"},["4457"] = {line = 25, file = "livemap.ts"},["4458"] = {line = 18, file = "livemap.ts"},["4459"] = {line = 18, file = "livemap.ts"},["4460"] = {line = 28, file = "livemap.ts"},["4461"] = {line = 29, file = "livemap.ts"},["4462"] = {line = 30, file = "livemap.ts"},["4463"] = {line = 31, file = "livemap.ts"},["4464"] = {line = 32, file = "livemap.ts"},["4465"] = {line = 30, file = "livemap.ts"},["4466"] = {line = 36, file = "livemap.ts"},["4467"] = {line = 37, file = "livemap.ts"},["4468"] = {line = 39, file = "livemap.ts"},["4469"] = {line = 41, file = "livemap.ts"},["4470"] = {line = 43, file = "livemap.ts"},["4472"] = {line = 44, file = "livemap.ts"},["4476"] = {line = 47, file = "livemap.ts"},["4477"] = {line = 36, file = "livemap.ts"},["4478"] = {line = 28, file = "livemap.ts"},["4479"] = {line = 51, file = "livemap.ts"},["4480"] = {line = 52, file = "livemap.ts"},["4481"] = {line = 53, file = "livemap.ts"},["4482"] = {line = 54, file = "livemap.ts"},["4483"] = {line = 55, file = "livemap.ts"},["4484"] = {line = 53, file = "livemap.ts"},["4485"] = {line = 59, file = "livemap.ts"},["4486"] = {line = 60, file = "livemap.ts"},["4487"] = {line = 62, file = "livemap.ts"},["4488"] = {line = 64, file = "livemap.ts"},["4490"] = {line = 65, file = "livemap.ts"},["4494"] = {line = 68, file = "livemap.ts"},["4495"] = {line = 59, file = "livemap.ts"},["4496"] = {line = 51, file = "livemap.ts"},["4497"] = {line = 72, file = "livemap.ts"},["4498"] = {line = 73, file = "livemap.ts"},["4499"] = {line = 74, file = "livemap.ts"},["4500"] = {line = 75, file = "livemap.ts"},["4501"] = {line = 76, file = "livemap.ts"},["4502"] = {line = 74, file = "livemap.ts"},["4503"] = {line = 80, file = "livemap.ts"},["4504"] = {line = 81, file = "livemap.ts"},["4505"] = {line = 83, file = "livemap.ts"},["4506"] = {line = 85, file = "livemap.ts"},["4508"] = {line = 86, file = "livemap.ts"},["4512"] = {line = 92, file = "livemap.ts"},["4513"] = {line = 80, file = "livemap.ts"},["4514"] = {line = 72, file = "livemap.ts"},["4675"] = {line = 1, file = "index.ts"},["4676"] = {line = 2, file = "index.ts"},["4677"] = {line = 3, file = "index.ts"},["4685"] = {line = 1, file = "index.ts"},["4686"] = {line = 1, file = "index.ts"},["4687"] = {line = 2, file = "index.ts"},["4688"] = {line = 2, file = "index.ts"},["4689"] = {line = 3, file = "index.ts"},["4690"] = {line = 3, file = "index.ts"},["4691"] = {line = 4, file = "index.ts"},["4692"] = {line = 6, file = "index.ts"},["4693"] = {line = 8, file = "index.ts"},["4694"] = {line = 9, file = "index.ts"},["4695"] = {line = 10, file = "index.ts"},["4697"] = {line = 13, file = "index.ts"},["4698"] = {line = 14, file = "index.ts"},["4699"] = {line = 16, file = "index.ts"},["4700"] = {line = 17, file = "index.ts"},["4701"] = {line = 18, file = "index.ts"},["4703"] = {line = 21, file = "index.ts"},["4704"] = {line = 22, file = "index.ts"},["4707"] = {line = 26, file = "index.ts"},["4710"] = {line = 24, file = "index.ts"},["4716"] = {line = 29, file = "index.ts"},["4717"] = {line = 22, file = "index.ts"},["4718"] = {line = 31, file = "index.ts"},["4719"] = {line = 32, file = "index.ts"},["4720"] = {line = 21, file = "index.ts"},["4721"] = {line = 35, file = "index.ts"},["4722"] = {line = 37, file = "index.ts"},["4744"] = {line = 3, file = "unit.service.ts"},["4745"] = {line = 3, file = "unit.service.ts"},["4746"] = {line = 4, file = "unit.service.ts"},["4747"] = {line = 4, file = "unit.service.ts"},["4748"] = {line = 6, file = "unit.service.ts"},["4749"] = {line = 6, file = "unit.service.ts"},["4750"] = {line = 6, file = "unit.service.ts"},["4752"] = {line = 6, file = "unit.service.ts"},["4753"] = {line = 7, file = "unit.service.ts"},["4754"] = {line = 8, file = "unit.service.ts"},["4755"] = {line = 9, file = "unit.service.ts"},["4756"] = {line = 7, file = "unit.service.ts"},["4757"] = {line = 11, file = "unit.service.ts"},["4760"] = {line = 33, file = "unit.service.ts"},["4763"] = {line = 13, file = "unit.service.ts"},["4764"] = {line = 14, file = "unit.service.ts"},["4765"] = {line = 15, file = "unit.service.ts"},["4766"] = {line = 16, file = "unit.service.ts"},["4768"] = {line = 17, file = "unit.service.ts"},["4769"] = {line = 18, file = "unit.service.ts"},["4770"] = {line = 19, file = "unit.service.ts"},["4771"] = {line = 20, file = "unit.service.ts"},["4772"] = {line = 21, file = "unit.service.ts"},["4773"] = {line = 16, file = "unit.service.ts"},["4774"] = {line = 22, file = "unit.service.ts"},["4775"] = {line = 16, file = "unit.service.ts"},["4776"] = {line = 13, file = "unit.service.ts"},["4777"] = {line = 31, file = "unit.service.ts"},["4783"] = {line = 12, file = "unit.service.ts"},["4786"] = {line = 11, file = "unit.service.ts"},["4787"] = {line = 38, file = "unit.service.ts"},["4798"] = {line = 13, file = "getSpeed.ts"},["4799"] = {line = 14, file = "getSpeed.ts"},["4800"] = {line = 15, file = "getSpeed.ts"},["4801"] = {line = 13, file = "getSpeed.ts"}});
 return require("src.index", ...)
