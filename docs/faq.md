@@ -30,8 +30,8 @@ A: There is now a 7 day free trial for DCS Web Editor Alpha and Beta Supporter a
 A: It only works in the Caucasus area. For some browsers you may need to enable mixed content for the editor website, as dcsmaps tiles are served over http not https. You can also enable mixed content (just for this website) in Chrome. This allows it to load images over http, which is necessary until DCSmaps can serve map tiles via https.
 [https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html?lang=en](https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html?lang=en)
 
-**Q: Some map layers in DCS Web Viewer aren't working.**  
-A: Some map layers will show grey tiles as they require a map key. To enable all map layers go to [https://account.mapbox.com/auth/signup/](https://account.mapbox.com/auth/signup/), sign up for a free account and paste the mapbox key into the field in the menu. Then reload the browser.
+**Q: Are there additional map layers?**  
+A: Additional pro map layers such as VFR are available for patrons.
 
 **Q: Its not working in my browser.**  
 A: Currently chrome-based browsers work best and have optimal performance. We recommend Chromium (open source Chrome without google). Second best are other Chromium-based browsers such as Chrome, Brave, Edge, Opera, Vivaldi etc.  
