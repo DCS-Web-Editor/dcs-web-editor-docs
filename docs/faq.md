@@ -31,7 +31,7 @@ A: It only works in the Caucasus area. For some browsers you may need to enable 
 [https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html?lang=en](https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html?lang=en)
 
 **Q: Are there additional map layers?**  
-A: Additional pro map layers such as VFR are available for patrons.
+A: Additional pro map layers such as VFR sectional charts are available for patrons.
 
 **Q: Its not working in my browser.**  
 A: Currently chrome-based browsers work best and have optimal performance. We recommend Chromium (open source Chrome without google). Second best are other Chromium-based browsers such as Chrome, Brave, Edge, Opera, Vivaldi etc.  
